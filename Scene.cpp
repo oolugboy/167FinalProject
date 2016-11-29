@@ -28,6 +28,10 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	buildGraph();
 	/* Initialize the sizes */
 	initializeObjects();
+
+	/* SHAPE GRAMMAR TESTING*/
+	BuildingGrammar * buildingGram = new BuildingGrammar();
+	buildingGram->Build();
 }
 void Scene::draw()
 {

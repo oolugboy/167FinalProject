@@ -23,6 +23,9 @@
 #include <string>
 #include "time.h"
 
+//Building Grammar
+#include "BuildingGrammar.h"
+
 class Scene
 {
 	public:
