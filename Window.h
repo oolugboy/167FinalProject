@@ -13,6 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 #include "shader.h"
+#include "Shader2.h"
 #include <cmath>
 
 class Window

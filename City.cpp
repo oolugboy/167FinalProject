@@ -15,7 +15,7 @@ City::City()
 	computePoints();
 	toWorld = glm::mat4(1.0f);
 
-	occupationShader = new Shader("../shaders/city_occupation.vert", "../shaders/city_occupation.frag");
+	occupationShader = new Shader("shaders/city_occupation.vert", "shaders/city_occupation.frag");
 }
 
 City::~City()
@@ -53,7 +53,7 @@ GLuint City::generateVAO() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	texture = loadTexture("../textures/glass-brick.jpg");
+	texture = loadTexture("textures/glass-brick.jpg");
 
 	return VAO;
 }
