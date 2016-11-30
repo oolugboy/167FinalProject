@@ -85,6 +85,8 @@ bool City::addObject(Node* object, glm::mat4 drawMatrix) {
 	//glReadPixels(xpos, Window::height - ypos, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &res);
 	//std::cout << "Select control point (" << (unsigned int)res[0] << "," << (unsigned int)res[1] << "," << (unsigned int)res[2] << "," << (unsigned int)res[3] << ")" << std::endl;
 
+
+	return true;
 }
 
 void City::draw(Shader shader)

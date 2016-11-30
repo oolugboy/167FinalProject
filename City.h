@@ -3,8 +3,9 @@
 
 #include "Curve.h"
 #include "Node.h"
-#include "Shader.h"
-#include "something.h"
+#include "Shader2.h"
+#include <SOIL.h>
+//#include "something.h"
 
 class City
 {
@@ -19,7 +20,6 @@ public:
 
 	void draw(Shader shader);
 	void drawCurves(Shader shader);
-	void update();
 
 	void computePoints();
 	void generateCurves();
