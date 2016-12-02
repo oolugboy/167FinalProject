@@ -27,7 +27,7 @@ class BuildingGrammar
 	public:
 		BuildingGrammar();
 		~BuildingGrammar();
-		MatrixTransform * Build();
+		MatrixTransform * Build(glm::vec3 position);
 
 	private:
 		bool ParseString();

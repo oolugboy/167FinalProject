@@ -6,6 +6,10 @@ using namespace std;
 float PI = 3.14159265;
 float modder = pow(10, 9) + 7;
 
+/*~~ SHAPE GRAMMAR TESTING*/
+MatrixTransform * buildingTrans;
+/*~~ END */
+
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 {
 	/* Initialize the degree for walking */
@@ -22,16 +26,19 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	sphereATrans = new MatrixTransform();
 	sphereBTrans = new MatrixTransform();	
 	
-	genSphere = new Sphere(1.0f, false);	
+	genSphere = new Sphere(1.0f, false);
 	boundCubeA = new Cube(true);
 	boundCubeB = new Cube(true);
 	buildGraph();
 	/* Initialize the sizes */
 	initializeObjects();
 
-	/* SHAPE GRAMMAR TESTING*/
+	/*~~ SHAPE GRAMMAR TESTING*/
 	BuildingGrammar * buildingGram = new BuildingGrammar();
-	buildingGram->Build();
+	buildingTrans = buildingGram->Build(glm::vec3(0.0f, 0.0f, 0.0f));
+	worldGroup->addChild(buildingTrans);
+	/*~~ END */
+	
 }
 void Scene::draw()
 {
