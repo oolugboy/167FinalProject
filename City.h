@@ -3,7 +3,9 @@
 
 #include "Curve.h"
 #include "Node.h"
-#include "Shader.h"
+#include "Shader2.h"
+#include <SOIL.h>
+//#include "something.h"
 
 class City
 {
@@ -18,7 +20,6 @@ public:
 
 	void draw(Shader shader);
 	void drawCurves(Shader shader);
-	void update();
 
 	void computePoints();
 	void generateCurves();
@@ -40,7 +41,7 @@ public:
 	std::vector<glm::vec3> city_grid;
 	std::vector<int> indices;
 
-	
+
 	//used to check new add object to city is okay or not
 	Shader *occupationShader;
 	std::vector<std::vector<bool>> occupation;

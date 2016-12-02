@@ -15,7 +15,7 @@ City::City()
 	computePoints();
 	toWorld = glm::mat4(1.0f);
 
-	occupationShader = new Shader("../shaders/city_occupation.vert", "../shaders/city_occupation.frag");
+	occupationShader = new Shader("shaders/city_occupation.vert", "shaders/city_occupation.frag");
 }
 
 City::~City()
@@ -53,7 +53,7 @@ GLuint City::generateVAO() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	texture = loadTexture("../textures/glass-brick.jpg");
+	texture = loadTexture("textures/glass-brick.jpg");
 
 	return VAO;
 }
@@ -85,6 +85,8 @@ bool City::addObject(Node* object, glm::mat4 drawMatrix) {
 	//glReadPixels(xpos, Window::height - ypos, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &res);
 	//std::cout << "Select control point (" << (unsigned int)res[0] << "," << (unsigned int)res[1] << "," << (unsigned int)res[2] << "," << (unsigned int)res[3] << ")" << std::endl;
 
+
+	return true;
 }
 
 void City::draw(Shader shader)
@@ -104,7 +106,7 @@ void City::draw(Shader shader)
 	//glPointSize(10.0f);
 	//glDrawArrays(GL_POINTS, 0, vertices.size());
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-	
+
 	//glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
 
 	glBindVertexArray(0);
@@ -213,7 +215,7 @@ void City::computePoints() {
 	//	indices.push_back(i);
 	//	indices.push_back(i + 1);
 	//}
-	
+
 }
 
 void City::generateCurves() {
@@ -223,7 +225,7 @@ void City::generateCurves() {
 	int right = world_intervals / 2 + world_intervals % 2;
 
 	float x_diff1, x_diff2, z_diff1, z_diff2;
-	int x1_set_point = - half / 6;
+	int x1_set_point = -half / 6;
 	int x1_left = abs(x1_set_point - left);
 	int x1_right = abs(x1_set_point - right);
 	int x2_set_point = 3 * half / 5;
