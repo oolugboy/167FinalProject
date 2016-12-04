@@ -2,15 +2,19 @@
 #define _CITY_H_
 
 #include "Curve.h"
-#include "Node.h"
+//#include "Node.h"
+//#include "Geode.h"
+#include "Group.h"
 #include "Shader2.h"
 #include <SOIL.h>
 //#include "something.h"
 
-class City
+class City : public Group
 {
 public:
 	City();
+	City(int intervals);
+	void initial();
 	~City();
 
 	GLuint generateVAO();
@@ -18,8 +22,9 @@ public:
 
 	bool addObject(Node *object, glm::mat4 drawMatrix);
 
-	void draw(Shader shader);
+	void draw(glm::mat4 cMatrix);
 	void drawCurves(Shader shader);
+	void drawCurves();
 
 	void computePoints();
 	void generateCurves();
@@ -41,9 +46,11 @@ public:
 	std::vector<glm::vec3> city_grid;
 	std::vector<int> indices;
 
-	
-	//used to check new add object to city is okay or not
-	Shader *occupationShader;
+	//shader for this object
+	Shader* cityShader;
+	Shader* curveShader; //may not need it
+
+						 //used to check new add object to city is okay or not
 	std::vector<std::vector<bool>> occupation;
 
 

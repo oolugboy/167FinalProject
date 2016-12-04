@@ -4,7 +4,17 @@
 
 City::City()
 {
-	this->world_intervals = 10;
+	initial();
+}
+
+
+City::City(int intervals)
+{
+	this->world_intervals = intervals;
+	initial();
+}
+
+void City::initial() {
 	for (int z = 0; z < world_intervals; z++) {
 		std::vector<bool> horizonal;
 		for (int x = 0; x < world_intervals; x++) {
@@ -15,7 +25,8 @@ City::City()
 	computePoints();
 	toWorld = glm::mat4(1.0f);
 
-	occupationShader = new Shader("shaders/city_occupation.vert", "shaders/city_occupation.frag");
+	cityShader = new Shader("shaders/city.vert", "shaders/city.frag");
+	curveShader = new Shader("shaders/curve.vert", "shaders/curve.frag");
 }
 
 City::~City()
@@ -33,7 +44,6 @@ GLuint City::generateVAO() {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &TBO);
-	glGenBuffers(1, &EBO);
 
 	glBindVertexArray(VAO);
 
@@ -42,62 +52,77 @@ GLuint City::generateVAO() {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 
+
 	glBindBuffer(GL_ARRAY_BUFFER, TBO);
 	glBufferData(GL_ARRAY_BUFFER, texture_v.size() * sizeof(glm::vec2), &(texture_v[0]), GL_STATIC_DRAW);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &(indices[0]), GL_STATIC_DRAW);
+
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &(indices[0]), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	texture = loadTexture("textures/glass-brick.jpg");
+	texture = loadTexture("textures/grass.jpg");
 
 	return VAO;
 }
 
 bool City::addObject(Node* object, glm::mat4 drawMatrix) {
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	occupationShader->Use();
-	glUniformMatrix4fv(glGetUniformLocation(occupationShader->Program, "model"), 1, GL_FALSE, glm::value_ptr(toWorld));
-	glUniformMatrix4fv(glGetUniformLocation(occupationShader->Program, "view"), 1, GL_FALSE, glm::value_ptr(Window::V));
-	glUniformMatrix4fv(glGetUniformLocation(occupationShader->Program, "projection"), 1, GL_FALSE, glm::value_ptr(Window::P));
+	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//occupationShader->Use();
+	//glUniformMatrix4fv(glGetUniformLocation(occupationShader->Program, "model"), 1, GL_FALSE, glm::value_ptr(toWorld));
+	//glUniformMatrix4fv(glGetUniformLocation(occupationShader->Program, "view"), 1, GL_FALSE, glm::value_ptr(Window::V));
+	//glUniformMatrix4fv(glGetUniformLocation(occupationShader->Program, "projection"), 1, GL_FALSE, glm::value_ptr(Window::P));
 
-	glUniform1i(glGetUniformLocation(occupationShader->Program, "code"), 1);
+	//glUniform1i(glGetUniformLocation(occupationShader->Program, "code"), 1);
 
-	object->draw(drawMatrix);
+	//object->draw(drawMatrix);
 
-	glm::mat4 pc = Window::P * Window::V;
-	unsigned char res[4];
-	for (int z = 0; z < world_intervals; z++) {
-		for (int x = 0; x < world_intervals; z++) {
-			glm::vec3 position = getPosition(x, z);
-			glm::vec4 p = pc * glm::vec4(position, 1.0);
-			float xpos = p.x / p.w;
-			float ypos = p.y / p.w;
-			printf("(x,z) = (%d,%d) = (%f,%f)\n", x, z, xpos, ypos);
-		}
-	}
+	//glm::mat4 pc = Window::P * Window::V;
+	//unsigned char res[4];
+	//for (int z = 0; z < world_intervals; z++) {
+	//	for (int x = 0; x < world_intervals; z++) {
+	//		glm::vec3 position = getPosition(x, z);
+	//		glm::vec4 p = pc * glm::vec4(position, 1.0);
+	//		float xpos = p.x / p.w;
+	//		float ypos = p.y / p.w;
+	//		printf("(x,z) = (%d,%d) = (%f,%f)\n", x, z, xpos, ypos);
+	//	}
+	//}
 	//glReadPixels(xpos, Window::height - ypos, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &res);
 	//std::cout << "Select control point (" << (unsigned int)res[0] << "," << (unsigned int)res[1] << "," << (unsigned int)res[2] << "," << (unsigned int)res[3] << ")" << std::endl;
 
 
+	for (int z = 0; z < world_intervals; z++) {
+		for (int x = 0; x < world_intervals; z++) {
+			glm::vec3 p0 = getPosition(x, z);			//left top
+			glm::vec3 p1 = getPosition(x, z + 1);		//left bottom
+			glm::vec3 p2 = getPosition(x + 1, z);		//right top
+			glm::vec3 p3 = getPosition(x + 1, z + 1);	//right bottom
+
+
+
+		}
+	}
+
 	return true;
 }
 
-void City::draw(Shader shader)
-{
+void City::draw(glm::mat4 cMatrix) {
+
+	cityShader->Use();
 	glm::mat4 modelview = Window::V * toWorld;
 
-	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "modelview"), 1, GL_FALSE, glm::value_ptr(modelview));
-	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(Window::P));
+	glUniformMatrix4fv(glGetUniformLocation(cityShader->Program, "modelview"), 1, GL_FALSE, glm::value_ptr(modelview));
+	glUniformMatrix4fv(glGetUniformLocation(cityShader->Program, "projection"), 1, GL_FALSE, glm::value_ptr(Window::P));
 	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);
-	glUniform1i(glGetUniformLocation(shader.Program, "tile"), 0);
+	glUniform1i(glGetUniformLocation(cityShader->Program, "tile"), 0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	//glLineWidth(3.0f);
@@ -106,11 +131,36 @@ void City::draw(Shader shader)
 	//glPointSize(10.0f);
 	//glDrawArrays(GL_POINTS, 0, vertices.size());
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-	
+
 	//glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
 
 	glBindVertexArray(0);
+
+	Group::draw(cMatrix * toWorld);
 }
+
+//void City::draw(Shader shader)
+//{
+//	glm::mat4 modelview = Window::V * toWorld;
+//
+//	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "modelview"), 1, GL_FALSE, glm::value_ptr(modelview));
+//	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(Window::P));
+//	glBindVertexArray(VAO);
+//	glActiveTexture(GL_TEXTURE0);
+//	glUniform1i(glGetUniformLocation(shader.Program, "tile"), 0);
+//	glBindTexture(GL_TEXTURE_2D, texture);
+//
+//	//glLineWidth(3.0f);
+//	//glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
+//	//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+//	//glPointSize(10.0f);
+//	//glDrawArrays(GL_POINTS, 0, vertices.size());
+//	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+//	
+//	//glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
+//
+//	glBindVertexArray(0);
+//}
 
 
 void City::drawCurves(Shader shader)
@@ -125,6 +175,17 @@ void City::drawCurves(Shader shader)
 	}
 }
 
+void City::drawCurves()
+{
+	for (int i = 0; i < curves_v.size(); i++) {
+		curves_v[i]->draw(*curveShader);
+	}
+
+
+	for (int i = 0; i < curves_h.size(); i++) {
+		curves_h[i]->draw(*curveShader);
+	}
+}
 
 void City::computePoints() {
 	this->generateCurves();
@@ -176,22 +237,22 @@ void City::computePoints() {
 			glm::vec3 h_pos = curves_h[z]->getPosition(x);
 			glm::vec3 pos = (v_pos + h_pos) * 0.5f;
 			city_grid.push_back(pos);
-			printf("(x,z) = (%d,%d) = (%f,%f)\n", x, z, pos.x, pos.z);
+			//printf("(x,z) = (%d,%d) = (%f,%f)\n", x, z, pos.x, pos.z);
 		}
 	}
 
-	glm::mat4 pc = Window::P * Window::V;
-	for (int z = 0; z <= world_intervals; z++) {
-		for (int x = 0; x <= world_intervals; x++) {
-			glm::vec3 position = getPosition(x, z);
-			glm::vec4 p = pc * glm::vec4(position, 1.0);
-			float xpos = (Window::width * p.x / p.w + Window::width) / 2.0;
-			float ypos = (Window::height * p.y / p.w + Window::height) / 2.0;
+	//glm::mat4 pc = Window::P * Window::V;
+	//for (int z = 0; z <= world_intervals; z++) {
+	//	for (int x = 0; x <= world_intervals; x++) {
+	//		glm::vec3 position = getPosition(x, z);
+	//		glm::vec4 p = pc * glm::vec4(position, 1.0);
+	//		float xpos = (Window::width * p.x / p.w + Window::width) / 2.0;
+	//		float ypos = (Window::height * p.y / p.w + Window::height) / 2.0;
 
 
-			printf("(x,z) = (%d,%d) = (%f,%f) = (%f,%f)\n", x, z, position.x, position.z, xpos, ypos);
-		}
-	}
+	//		printf("(x,z) = (%d,%d) = (%f,%f) = (%f,%f)\n", x, z, position.x, position.z, xpos, ypos);
+	//	}
+	//}
 
 	//lines index
 	//for (int z = 0; z <= world_intervals; z++) {
@@ -215,7 +276,7 @@ void City::computePoints() {
 	//	indices.push_back(i);
 	//	indices.push_back(i + 1);
 	//}
-	
+
 }
 
 void City::generateCurves() {
@@ -225,7 +286,7 @@ void City::generateCurves() {
 	int right = world_intervals / 2 + world_intervals % 2;
 
 	float x_diff1, x_diff2, z_diff1, z_diff2;
-	int x1_set_point = - half / 6;
+	int x1_set_point = -half / 6;
 	int x1_left = abs(x1_set_point - left);
 	int x1_right = abs(x1_set_point - right);
 	int x2_set_point = 3 * half / 5;

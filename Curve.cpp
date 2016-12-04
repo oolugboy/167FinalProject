@@ -52,10 +52,10 @@ void Curve::draw(Shader shader)
 	glBindVertexArray(VAO);
 
 	glLineWidth(3.0f);
-	//glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
-	glPointSize(10.0f);
+	glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
+	//glPointSize(10.0f);
 	//glDrawArrays(GL_POINTS, 0, vertices.size());
-	glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
+	//glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
 
 	glBindVertexArray(0);
 }
