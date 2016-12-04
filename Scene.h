@@ -20,8 +20,9 @@
 #include "Cube.h"
 #include "Sphere.h"
 #include "MatrixTransform.h"
+#include "Ball.h"
 #include <string>
-#include "time.h"
+#include <time.h>
 
 //Building Grammar
 #include "BuildingGrammar.h"
@@ -44,17 +45,24 @@ class Scene
 		Group * worldGroup;		
 		MatrixTransform * boundBoxATrans;
 		MatrixTransform * boundBoxBTrans;
-		MatrixTransform * sphereATrans;
-		MatrixTransform * sphereBTrans;
+		MatrixTransform * playerBallTrans;
+		MatrixTransform * ballBTrans;
 		vector <glm::mat4 > origPos;
+		glm::vec3 playerTrans;
 		glm::mat4 worldMatTrans;
-		Geode * genSphere;
+		Ball * player;
+		Ball * aI;
 		void buildGraph();
 		void initializeObjects();
 		void moveBalls();	
 		bool isCollide();
-		Cube * boundCubeA;
-		Cube * boundCubeB;
-		bool show;
+		void changePlayerDirection(float direction, bool posAccel);
+		Sphere * genSphere;
+		Cube * genCube;
+		vector < Ball * > gameBalls;
+		void acceleratePlayer(bool posAccel);
+		void jumpPlayer(bool accel);
+		vector< Object * > collidableObjects;		
+		clock_t t;
 };
 #endif

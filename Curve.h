@@ -25,8 +25,7 @@ public:
 	Curve(std::vector<glm::vec3>* cp, int interval);
 	~Curve();
 
-	GLuint generateVAO();
-
+	void generateVAO();
 
 	glm::mat4 toWorld;
 
@@ -47,6 +46,7 @@ public:
 	std::vector<int> indices;
 
 	std::vector<glm::vec3>* control_points;
+
 	int interval;
 	float step;
 };

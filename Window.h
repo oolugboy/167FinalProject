@@ -13,7 +13,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 #include "shader.h"
-#include "Shader2.h"
 #include <cmath>
 
 class Window
@@ -36,6 +35,6 @@ public:
 	static GLint shaderProgram2; // The seperate shader for the geometries
 	static glm::vec3 cam_pos;		// e  | Position of camera
 	static glm::vec3 cam_look_at;	// d  | This is where the camera looks at
-	static glm::vec3 cam_up;			// up | What orientation "up" is
+	static glm::vec3 cam_up;			// up | What orientation "up" is	
 };
 #endif

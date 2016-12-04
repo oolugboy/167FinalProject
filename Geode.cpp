@@ -32,11 +32,5 @@ void Geode::draw(glm::mat4 cMatrix)
 }
 void Geode::update()
 {	
-	glm::vec4 temp = toWorld[3];
-	xBounds = (1.0f * toWorld[0][0]) + temp.x;	
-	yBounds = (1.0f * toWorld[1][1]) + temp.y;	
-	zBounds = (1.0f * toWorld[2][2]) + temp.z;
-	xWidth = 2.0f * toWorld[0][0];
-	yWidth = 2.0f * toWorld[1][1];
-	zWidth = 2.0f * toWorld[2][2];	
+	
 } 

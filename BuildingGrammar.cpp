@@ -84,7 +84,7 @@ BuildingGrammar::~BuildingGrammar()
 * BuildGrammar
 * returns MatrixTransform *
 */
-MatrixTransform * BuildingGrammar::Build()
+MatrixTransform * BuildingGrammar::Build(glm::vec3 position)
 {
 	//------Build Grammar String that has no more paths
 
@@ -105,10 +105,89 @@ MatrixTransform * BuildingGrammar::Build()
 	//------Build building using the string
 
 	//Create the Group (or coordinate space) for this building
+	//and initialie size and position
 	MatrixTransform * buildingTrans = new MatrixTransform();
+	buildingTrans->transformMatrix = buildingTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	buildingTrans->transformMatrix = buildingTrans->transformMatrix * glm::translate(glm::mat4(1.0f), position);
 
+	//Initialize Our building shapes
+	//WARNING NEED TO MOVE THIS ELSEWHERE SO WE DON'T RUN OUT OF MEMORY
+	Sphere * sphere = new Sphere(2, false);
+	Cube * cube = new Cube(false);
 
-	//TODO: BUILD THE BUILDING USING THE STRING
+	float height = 0;
+	
+	//Parse the string and add the shapes to the building
+	for (int i = 0; i < gram_str.length(); i++) 
+	{
+		char cur_symbol = gram_str[i];
+		switch (cur_symbol)
+		{
+			case '0':
+			{
+				MatrixTransform * shapeTrans = new MatrixTransform();
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
+				shapeTrans->addChild(cube);
+				buildingTrans->addChild(shapeTrans);
+				cout << "Building Cube" << endl;
+				break;
+			}
+			case '1':
+			{	
+				MatrixTransform * shapeTrans = new MatrixTransform();
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
+				shapeTrans->addChild(sphere);
+				buildingTrans->addChild(shapeTrans);
+				cout << "Building Cube" << endl;
+				break;
+			}
+			case '2':
+			{
+				MatrixTransform * shapeTrans = new MatrixTransform();
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
+				shapeTrans->addChild(sphere);
+				buildingTrans->addChild(shapeTrans);
+				cout << "Building Sphere" << endl;
+				break;
+			}
+			case '3':
+			{
+				MatrixTransform * shapeTrans = new MatrixTransform();
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
+				shapeTrans->addChild(cube);
+				buildingTrans->addChild(shapeTrans);
+				cout << "Building Sphere" << endl;
+				break;
+			}
+			case '4':
+			{
+				MatrixTransform * shapeTrans = new MatrixTransform();
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
+				shapeTrans->addChild(sphere);
+				buildingTrans->addChild(shapeTrans);
+				cout << "Building Sphere" << endl;
+				break;
+			}
+			case '5':
+			{
+				MatrixTransform * shapeTrans = new MatrixTransform();
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
+				shapeTrans->addChild(cube);
+				buildingTrans->addChild(shapeTrans);
+				cout << "Building Sphere" << endl;
+				break;
+			}
+			default:
+				break;
+		}
+		height += 2.0f;
+	}
 
 	//Return the final building
 	return buildingTrans;

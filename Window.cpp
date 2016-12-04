@@ -1,6 +1,7 @@
 #include "window.h"
 #include "Scene.h"
 
+
 using namespace std;
 const char* window_title = "GLFW Starter Project";
 
@@ -12,6 +13,9 @@ bool leftButton = false, rightButton = false;
 float scrollOffset = 0.0f;
 glm::vec3 currPos(0.0f, 0.0f, 0.0f);
 glm::vec3 lastPos(0.0f, 0.0f, 0.0f);
+bool accelerate = false;
+bool turnRight = false;
+bool turnLeft = false;
 
 // On some systems you need to change this to the absolute path
 #define VERTEX_SHADER_PATH "../shader.vert"
@@ -24,12 +28,20 @@ glm::vec3 Window::cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
 glm::vec3 Window::cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
 glm::vec3 Window::cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
+/* For the birds eye view */
+/*
+glm::vec3 Window::cam_pos(0.0f, 50.0f, 0.0f);		// e  | Position of camera
+glm::vec3 Window::cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
+glm::vec3 Window::cam_up(0.0f, 0.0f, 1.0f);			// up | What orientation "up" is */
+
 int Window::width;
 int Window::height;
 
 glm::mat4 Window::P;
 glm::mat4 Window::V;
 GLint Window::shaderProgram2;
+
+int camera_mode = 0;
 
 void Window::initialize_objects()
 {
@@ -121,8 +133,18 @@ void Window::display_callback(GLFWwindow* window)
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// TO update the camera position with user input 
-	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
+	if (camera_mode == 0) {
+		V = glm::lookAt(cam_pos, cam_look_at, cam_up);
+	}
+	else if(camera_mode == 1){
+		/* For the birds eye view */
+		glm::vec3 pos(0.0f, 50.0f, 0.0f);		// e  | Position of camera
+		glm::vec3 look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
+		glm::vec3 up(0.0f, 0.0f, 1.0f);			// up | What orientation "up" is 
+
+		V = glm::lookAt(pos, look_at, up);
+	}
+	
 
 	/** Draw the scene */
 	scene->draw();
@@ -131,6 +153,27 @@ void Window::display_callback(GLFWwindow* window)
 	/* Test the collision detection */
 	if (scene->isCollide())
 		cout << " Collision detected " << endl;
+	/* Turn the player according to user controls */
+	if (turnLeft)
+	{
+		cout << " Turning left " << endl;
+		scene->changePlayerDirection(0, accelerate);
+	}
+	if (turnRight)
+	{
+		cout << " Turning right " << endl;
+		scene->changePlayerDirection(2, accelerate);
+	}
+	if (accelerate)//Speed up
+	{
+		cout << "Speeding up " << endl;
+		scene->acceleratePlayer(true);
+	}
+	else // Slow down
+	{
+		cout << " Slowing down " << endl;
+		scene->acceleratePlayer(false);
+	}
 	/** The mouse controls */
 	if (leftButton)
 	{
@@ -148,7 +191,44 @@ void Window::display_callback(GLFWwindow* window)
 /* For the keyboard user input */
 void Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-
+	cout << "polling for callback " << endl;
+	// Check if escape was pressed
+	if (action == GLFW_PRESS && key == GLFW_KEY_ESCAPE)
+	{
+		// Close the window. This causes the program to also terminate.
+		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
+	if (action == GLFW_PRESS && key == GLFW_KEY_J)
+	{
+		scene->jumpPlayer(accelerate);
+	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	{
+		turnLeft = true;
+	}
+	else
+	{
+		turnLeft = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	{
+		turnRight = true;
+	}
+	else
+	{
+		turnRight = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		accelerate = true;
+	}
+	else
+	{
+		accelerate = false;
+	}
+	if (action == GLFW_PRESS && key == GLFW_KEY_C) {
+		camera_mode = (camera_mode + 1) % 2;
+	}
 }
 void Window::mouse_button_callback(GLFWwindow * window, int button, int action, int mods)
 {	

@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Ball.cpp" />
     <ClCompile Include="..\BuildingGrammar.cpp" />
     <ClCompile Include="..\City.cpp" />
     <ClCompile Include="..\Cube.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\MatrixTransform.cpp" />
     <ClCompile Include="..\Node.cpp" />
+    <ClCompile Include="..\Object.cpp" />
     <ClCompile Include="..\Scene.cpp" />
     <ClCompile Include="..\shader.cpp" />
     <ClCompile Include="..\SkyBox.cpp" />
@@ -144,6 +146,7 @@
     <ClCompile Include="..\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Ball.h" />
     <ClInclude Include="..\BuildingGrammar.h" />
     <ClInclude Include="..\City.h" />
     <ClInclude Include="..\Cube.h" />
@@ -153,8 +156,9 @@
     <ClInclude Include="..\main.h" />
     <ClInclude Include="..\MatrixTransform.h" />
     <ClInclude Include="..\Node.h" />
+    <ClInclude Include="..\Object.h" />
     <ClInclude Include="..\Scene.h" />
-    <ClInclude Include="..\shader.h" />
+    <ClInclude Include="..\Shader.h" />
     <ClInclude Include="..\Shader2.h" />
     <ClInclude Include="..\SkyBox.h" />
     <ClInclude Include="..\Sphere.h" />

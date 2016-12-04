@@ -62,27 +62,7 @@ Cube::~Cube()
 	glDeleteBuffers(1, &EBO);
 	glDeleteBuffers(1, &NBO);
 }
-bool Cube::collides(Geode * other)
-{
 
-	float xRMax = fmax(this->xBounds, other->xBounds);
-	float xLMin = fmin(this->xBounds - this->xWidth, other->xBounds - other->xWidth);
-	if (abs(xRMax - xLMin) < (this->xWidth + other->xWidth))
-	{
-		float yRMax = fmax(this->yBounds, other->yBounds);
-		float yLMin = fmin(this->yBounds - this->yWidth, other->yBounds - other->yWidth);
-		if (abs(yRMax - yLMin) < (this->yWidth + other->yWidth))
-		{
-			float zRMax = fmax(this->zBounds, other->zBounds);
-			float zLMin = fmin(this->zBounds - this->zWidth, other->zBounds - other->zWidth);
-			if (abs(zRMax - zLMin) < (this->zWidth + other->zWidth))
-			{
-				return true;
-			}
-		}
-	}
-	return false;	
-}
 void Cube::spin(float deg)
 {
 	// If you haven't figured it out from the last project, this is how you fix spin's behavior

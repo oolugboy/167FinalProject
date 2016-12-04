@@ -88,8 +88,7 @@ public:
 		{4, 5, 1, 1, 0, 4},
 		// Right face
 		{3, 2, 6, 6, 7, 3}
-	};
-	bool collides(Geode * other);
+	};	
 };
 
 #endif

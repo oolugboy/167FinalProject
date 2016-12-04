@@ -4,8 +4,7 @@
 using namespace std;
 
 Sphere::Sphere(float radius, bool wired)
-{
-	
+{	
 	/* Set the number of longitudes and latitudes */
 	latNum = 30;
 	longNum = 30;
