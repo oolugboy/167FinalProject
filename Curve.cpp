@@ -9,6 +9,11 @@ Curve::Curve(std::vector<glm::vec3>* cp, int interval = 200)
 	control_points = cp;
 	computePoints();
 	toWorld = glm::mat4(1.0f);
+
+	// Create array object and buffers. Remember to delete your buffers when the object is destroyed!
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 }
 
 Curve::~Curve()
@@ -20,12 +25,8 @@ Curve::~Curve()
 	glDeleteBuffers(1, &EBO);
 }
 
-GLuint Curve::generateVAO() {
-	// Create array object and buffers. Remember to delete your buffers when the object is destroyed!
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
+void Curve::generateVAO() 
+{
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -38,9 +39,7 @@ GLuint Curve::generateVAO() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &(indices[0]), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-	return VAO;
+	glBindVertexArray(0);	
 }
 
 void Curve::draw(Shader shader)
@@ -62,6 +61,7 @@ void Curve::draw(Shader shader)
 
 void Curve::update()
 {
+
 }
 
 void Curve::computePoints() {

@@ -22,7 +22,7 @@ using namespace std;
 class Sphere : public Geode
 {
 public:
-	Sphere(float radius, bool wired);
+	Sphere(float radius, bool wired);	
 	void render();
 	int latNum;
 	int longNum;
