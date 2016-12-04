@@ -21,6 +21,7 @@
 #include "Sphere.h"
 #include "MatrixTransform.h"
 #include "Ball.h"
+#include "City.h"
 #include <string>
 #include <time.h>
 
@@ -50,6 +51,7 @@ class Scene
 		vector <glm::mat4 > origPos;
 		glm::vec3 playerTrans;
 		glm::mat4 worldMatTrans;
+		City* city;
 		Ball * player;
 		Ball * aI;
 		void buildGraph();
