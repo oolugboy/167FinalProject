@@ -55,21 +55,34 @@ using namespace std;
 //Chances for each rule
 
 //Set 1 : Symbol B
-const int CHANCE_0M = 50;
-const int CHANCE_1M = 50;
+const int FIXED_CHANCE_0M = 50;
+const int FIXED_CHANCE_1M = 50;
 //Set 2 : Symbol M
-const int CHANCE_2M = 80;
-const int CHANCE_2T = 20;
+const int FIXED_CHANCE_2M = 80;
+const int FIXED_CHANCE_2T = 20;
 //Set 3 : Symbol T
-const int CHANCE_3 = 50;
-const int CHANCE_4 = 25;
-const int CHANCE_5 = 25;
+const int FIXED_CHANCE_3 = 50;
+const int FIXED_CHANCE_4 = 25;
+const int FIXED_CHANCE_5 = 25;
+
+//Set 1 : Symbol B
+int CHANCE_0M;
+int CHANCE_1M;
+//Set 2 : Symbol M
+int CHANCE_2M;
+int CHANCE_2T;
+//Set 3 : Symbol T
+int CHANCE_3;
+int CHANCE_4;
+int CHANCE_5;
 
 int choice = 0;		//Current choice given by the RNG
 string gram_str;	//Grammar String
 
 Sphere * sphere;
 Cube * cube;
+
+int height_counter = 0;
 
 //Constructor
 BuildingGrammar::BuildingGrammar()
@@ -94,6 +107,17 @@ BuildingGrammar::~BuildingGrammar()
 */
 MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, float rotationAngle)
 {
+	height_counter = 0;
+	//Set 1 : Symbol B
+	CHANCE_0M = FIXED_CHANCE_0M;
+	CHANCE_1M = FIXED_CHANCE_1M;
+	//Set 2 : Symbol M
+	CHANCE_2M = FIXED_CHANCE_2M;
+	CHANCE_2T = FIXED_CHANCE_2T;
+	//Set 3 : Symbol T
+	CHANCE_3 = FIXED_CHANCE_3;
+	CHANCE_4 = FIXED_CHANCE_4;
+	CHANCE_5 = FIXED_CHANCE_5;
 
 	glm::vec3 pos = position;
 	glm::vec3 scl = scale;
@@ -243,10 +267,16 @@ bool BuildingGrammar::ParseString()
 			case 'M':	//Symbol M
 			{
 				finished = false;
-				//Rule 3: M -> 2M (80%)
+				//Rule 3: M -> 2M (100%)
 				if (choice - CHANCE_2M <= 0 )
 					temp_str.append("2M");
-				//Rule 4: M -> 2T (20%)
+					height_counter += 1;
+					if (height_counter >= 5)
+					{
+						CHANCE_2M = 80;
+						CHANCE_2T = 20;
+					}
+				//Rule 4: M -> 2T (0%)
 				else if (choice - (CHANCE_2M + CHANCE_2T) <= 0 )
 					temp_str.append("2T");
 				break;
@@ -279,3 +309,4 @@ bool BuildingGrammar::ParseString()
 	//Return whether or not we have finished replacing all replaceable symbols in the string
 	return finished;
 }
+
