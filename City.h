@@ -20,7 +20,7 @@ public:
 	GLuint generateVAO();
 
 
-	bool addObject(Node *object, glm::mat4 drawMatrix);
+	bool addObject(glm::mat4 drawMatrix);
 
 	void draw(glm::mat4 cMatrix);
 	void drawCurves(Shader shader);

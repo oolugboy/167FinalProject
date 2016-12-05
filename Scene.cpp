@@ -35,6 +35,8 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 
 	aI = new Ball(false, glm::vec3(0, 0, 0));
 	aI->sphere = genSphere;
+
+	city = new City(100);
 	
 	buildGraph();
 	/* Initialize the sizes */
@@ -59,6 +61,7 @@ void Scene::draw()
 	
 	//cout << " It took this " << t << " clicks to render the robots in this frame " << endl;
 	worldGroup->update();
+	city->drawCurves();
 }
 void Scene::changePlayerDirection(float direction, bool posAccel)
 {
@@ -135,6 +138,7 @@ void Scene::buildGraph()
 	/* Now to build the tree */	
 	worldGroup->addChild(playerBallTrans);	
 	worldGroup->addChild(ballBTrans);
+	worldGroup->addChild(city);
 
 	playerBallTrans->addChild(player);
 	ballBTrans->addChild(aI);
