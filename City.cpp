@@ -27,6 +27,8 @@ void City::initial() {
 
 	cityShader = new Shader("shaders/city.vert", "shaders/city.frag");
 	curveShader = new Shader("shaders/curve.vert", "shaders/curve.frag");
+
+	generateVAO();
 }
 
 City::~City()
@@ -70,7 +72,7 @@ GLuint City::generateVAO() {
 	return VAO;
 }
 
-bool City::addObject(Node* object, glm::mat4 drawMatrix) {
+bool City::addObject(glm::mat4 drawMatrix) {
 
 	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
