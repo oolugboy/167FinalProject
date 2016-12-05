@@ -44,8 +44,8 @@ using namespace std;
 	B -> 0M				50%
 	B -> 1M				50%
 
-	M -> 2M				50%
-	M -> 2T				50%
+	M -> 2M				80%
+	M -> 2T				20%
 
 	T -> 3				50%
 	T -> 4				25%
@@ -58,8 +58,8 @@ using namespace std;
 const int CHANCE_0M = 50;
 const int CHANCE_1M = 50;
 //Set 2 : Symbol M
-const int CHANCE_2M = 50;
-const int CHANCE_2T = 50;
+const int CHANCE_2M = 80;
+const int CHANCE_2T = 20;
 //Set 3 : Symbol T
 const int CHANCE_3 = 50;
 const int CHANCE_4 = 25;
@@ -68,11 +68,19 @@ const int CHANCE_5 = 25;
 int choice = 0;		//Current choice given by the RNG
 string gram_str;	//Grammar String
 
+Sphere * sphere;
+Cube * cube;
+
 //Constructor
 BuildingGrammar::BuildingGrammar()
 {
 	//Seed our RNG using current time (this will give unique results for each die roll)
 	srand(time(NULL));
+
+	//Initialize Our building shapes
+	//WARNING NEED TO MOVE THIS ELSEWHERE SO WE DON'T RUN OUT OF MEMORY
+	sphere = new Sphere(2, false);
+	cube = new Cube(false);
 }
 
 //Deconstructor
@@ -84,8 +92,15 @@ BuildingGrammar::~BuildingGrammar()
 * BuildGrammar
 * returns MatrixTransform *
 */
-MatrixTransform * BuildingGrammar::Build(glm::vec3 position)
+MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, float rotationAngle)
 {
+
+	glm::vec3 pos = position;
+	glm::vec3 scl = scale;
+	float rotAngle = rotationAngle;
+
+	pos.y = scl.y;
+
 	//------Build Grammar String that has no more paths
 
 	//Start with a replaceable bottom
@@ -107,13 +122,9 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position)
 	//Create the Group (or coordinate space) for this building
 	//and initialie size and position
 	MatrixTransform * buildingTrans = new MatrixTransform();
-	buildingTrans->transformMatrix = buildingTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-	buildingTrans->transformMatrix = buildingTrans->transformMatrix * glm::translate(glm::mat4(1.0f), position);
-
-	//Initialize Our building shapes
-	//WARNING NEED TO MOVE THIS ELSEWHERE SO WE DON'T RUN OUT OF MEMORY
-	Sphere * sphere = new Sphere(2, false);
-	Cube * cube = new Cube(false);
+	buildingTrans->transformMatrix = buildingTrans->transformMatrix * glm::translate(glm::mat4(1.0f), pos);
+	buildingTrans->transformMatrix = buildingTrans->transformMatrix * glm::scale(glm::mat4(1.0f), scl);
+	buildingTrans->transformMatrix = buildingTrans->transformMatrix * glm::rotate(glm::mat4(1.0f), rotAngle / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	float height = 0;
 	
@@ -232,10 +243,10 @@ bool BuildingGrammar::ParseString()
 			case 'M':	//Symbol M
 			{
 				finished = false;
-				//Rule 3: M -> 2M (50%)
+				//Rule 3: M -> 2M (80%)
 				if (choice - CHANCE_2M <= 0 )
 					temp_str.append("2M");
-				//Rule 4: M -> 2T (50%)
+				//Rule 4: M -> 2T (20%)
 				else if (choice - (CHANCE_2M + CHANCE_2T) <= 0 )
 					temp_str.append("2T");
 				break;
