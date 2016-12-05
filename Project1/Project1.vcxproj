@@ -139,6 +139,7 @@
     <ClCompile Include="..\MatrixTransform.cpp" />
     <ClCompile Include="..\Node.cpp" />
     <ClCompile Include="..\Object.cpp" />
+    <ClCompile Include="..\PinchedCube.cpp" />
     <ClCompile Include="..\Pyramid.cpp" />
     <ClCompile Include="..\Scene.cpp" />
     <ClCompile Include="..\shader.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="..\MatrixTransform.h" />
     <ClInclude Include="..\Node.h" />
     <ClInclude Include="..\Object.h" />
+    <ClInclude Include="..\PinchedCube.h" />
     <ClInclude Include="..\Pyramid.h" />
     <ClInclude Include="..\Scene.h" />
     <ClInclude Include="..\Shader.h" />

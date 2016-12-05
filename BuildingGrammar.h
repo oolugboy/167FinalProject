@@ -21,6 +21,7 @@
 #include "Pyramid.h"
 #include "SlantedTop.h"
 #include "Trapezoid.h"
+#include "PinchedCube.h"
 #include "MatrixTransform.h"
 #include <string>
 #include "time.h"
