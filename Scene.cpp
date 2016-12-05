@@ -40,7 +40,20 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	
 	/*~~ SHAPE GRAMMAR TESTING*/
 	BuildingGrammar * buildingGram = new BuildingGrammar();
-	buildingTrans = buildingGram->Build(glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(0.5f,0.5f,0.5f), 45.0f);
+	buildingTrans = buildingGram->Build(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(0.5f,0.5f,0.5f), 45.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(-2.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 20.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 80.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 30.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(2.0f, 0.0f, 5.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(-2.0f, 0.0f, 5.0f), glm::vec3(0.5f, 0.5f, 0.5f), 68.0f);
+	worldGroup->addChild(buildingTrans);
 	/*~~ END */
 	
 	buildGraph();
@@ -138,9 +151,6 @@ void Scene::buildGraph()
 	/* Now to build the tree */	
 	worldGroup->addChild(playerBallTrans);	
 	worldGroup->addChild(ballBTrans);
-	/* ~BUILDING GRAMMAR TESTING */
-	worldGroup->addChild(buildingTrans);
-	/* ~ END */
 	worldGroup->addChild(city);
 
 	playerBallTrans->addChild(player);
