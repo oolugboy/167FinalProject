@@ -20,6 +20,10 @@
 #include "SkyBox.h"
 #include "Cube.h"
 #include "Sphere.h"
+#include "Pyramid.h"
+#include "SlantedTop.h"
+#include "Trapezoid.h"
+#include "PinchedCube.h"
 #include "MatrixTransform.h"
 #include "Ball.h"
 #include "City.h"
@@ -52,6 +56,7 @@ class Scene
 		MatrixTransform * ballBTrans;
 		vector <glm::mat4 > origPos;
 		glm::vec3 playerTrans;
+		glm::vec3 aITrans;
 		glm::mat4 worldMatTrans;
 		City* city;
 		Ball * player;

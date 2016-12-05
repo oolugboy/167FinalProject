@@ -36,12 +36,12 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	genSphere = new Sphere(1.0f, false);
 	genCube = new Cube(true);
 
-	//player = new Ball(true, glm::vec3(0,0,0));	
-	//player->sphere = genSphere;
-	//playerTrans = glm::vec3(0.0f, 0.0f, 0.0f);
+	player = new Ball(true, glm::vec3(0,0,0));	
+	player->sphere = genSphere;	
 
-	//aI = new Ball(false, glm::vec3(0, 0, 0));
-	//aI->sphere = genSphere;
+	aI = new Ball(false, glm::vec3(0, 0, -25.0f));
+	ballBTrans->transformMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -25.0f));
+	aI->sphere = genSphere;
 
 	MatrixTransform* cube1 = new MatrixTransform();
 	glm::mat4 cube1_matrix = cube1->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(4.0f, 0.0f, 4.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(3.0f));
@@ -71,17 +71,29 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	}
 
 
-	
+
+	/*~~ SHAPE GRAMMAR TESTING*/
+	BuildingGrammar * buildingGram = new BuildingGrammar();
+	buildingTrans = buildingGram->Build(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 45.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(-2.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 20.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 80.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 30.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(2.0f, 0.0f, 5.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(-2.0f, 0.0f, 5.0f), glm::vec3(0.5f, 0.5f, 0.5f), 68.0f);
+	worldGroup->addChild(buildingTrans);
+	/*~~ END */
+
 	buildGraph();
 	/* Initialize the sizes */
 	initializeObjects();
 
-	/*~~ SHAPE GRAMMAR TESTING*/
-	BuildingGrammar * buildingGram = new BuildingGrammar();
-	buildingTrans = buildingGram->Build(glm::vec3(3.0f, 0.0f, 0.0f));
-	buildingTrans->transformMatrix = cube2_matrix;
-	worldGroup->addChild(buildingTrans);
-	/*~~ END */
 	
 }
 
@@ -108,6 +120,11 @@ void Scene::draw()
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
 	worldGroup->draw(scale);
 	
+
+	/* Test the collision detection */
+	if (isCollide())
+		cout << " Collision detected " << endl;
+
 	//cout << " It took this " << t << " clicks to render the robots in this frame " << endl;
 	worldGroup->update();
 
@@ -118,17 +135,7 @@ void Scene::draw()
 }
 void Scene::changePlayerDirection(float direction, bool posAccel)
 {
-	glm::mat4 rotMatrix;
-	if (direction == 0)//left
-	{
-		//player->turn(true, false, posAccel);
-		player->turn = 0;
-	}
-	if (direction == 2)//Right
-	{
-		//player->turn(false, true, posAccel);
-		player->turn = 2;
-	}	
+	player->turn = direction;		
 }
 
 void Scene::mouseOrbit(glm::vec3 & lastPosition, glm::vec3 & currPosition, glm::vec3 & cam_pos, int width, int height)
@@ -165,7 +172,8 @@ glm::vec3 Scene::trackBallMapping(glm::vec3 point, int width, int height)
 /* Reset the acceleration */
 void Scene::acceleratePlayer(bool posAccel)
 {
-	//player->accelerate(posAccel);
+	player->accelerate(posAccel);
+	aI->accelerate(false);
 }
 void Scene::moveBalls()
 {	 
@@ -177,14 +185,17 @@ void Scene::moveBalls()
 	//S = ut + 1/2(a(t)^2)	
 	/*cout << " The acceleration is ";
 	player->printVector(player->acceleration);*/
-	//glm::vec3 diff = (player->initVelocity * time) + (0.50f * player->acceleration * pow(time, 2));
-	//cout << " The diff is ";
-	//player->printVector(diff);
-	//playerTrans = playerTrans + diff;
-	///*cout << " We are translating  ";
-	//player->printVector(playerTrans); */
-	//playerBallTrans->transformMatrix = glm::translate(glm::mat4(1.0f), playerTrans);
-	//ballBTrans->transformMatrix = ballBTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	glm::vec3 diff = glm::vec3(0.0f, 0.0f, 0.0f);
+	diff = (player->initVelocity * time) + (0.50f * player->acceleration * pow(time, 2));
+	cout << " The diff is ";
+	player->printVector(diff);	
+	playerBallTrans->transformMatrix = playerBallTrans->transformMatrix * glm::translate(glm::mat4(1.0f), diff);
+	
+	/* For the aI part */
+	diff = (aI->initVelocity * time) + (0.50f * aI->acceleration * pow(time, 2));
+	cout << " The aI acceleration is ";
+	player->printVector(aI->acceleration);
+	ballBTrans->transformMatrix = ballBTrans->transformMatrix * glm::translate(glm::mat4(1.0f), diff); 
 }
 void Scene::buildGraph()
 {
@@ -204,31 +215,35 @@ void Scene::buildGraph()
 }
 void Scene::initializeObjects()
 {
-/*	playerBallTrans->transformMatrix = playerBallTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-12.0f, 0.0f, 0.0f));
-	playerBallTrans->transformMatrix = playerBallTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));*/
-
-	//ballBTrans->transformMatrix = ballBTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -12.0f));	
-
-	///* add all the objects to the vector */
-	//collidableObjects.push_back(player);
-	//collidableObjects.push_back(aI);
+	/* add all the objects to the vector */
+	collidableObjects.push_back(player);
+	collidableObjects.push_back(aI);
 }
 bool Scene::isCollide()
 {
-	//int size = collidableObjects.size();
-	//for (int i = 0; i < size; i++)
-	//{
-	//	for (int j = i + 1; j < size; j++)
-	//	{
-	//		if (collidableObjects[i]->collidesWith(collidableObjects[j]))
-	//		{
-	//			collidableObjects[i]->handleCollision(collidableObjects[j]);
-	//			collidableObjects[j]->handleCollision(collidableObjects[i]);
-	//		}
-	//	}
-	//}
-	//return player->collidesWith(aI);
-	return false;
+	int size = collidableObjects.size();
+	for (int i = 0; i < size; i++)
+	{
+		collidableObjects[i]->getCollided = false;
+		for (int j = i + 1; j < size; j++)
+		{
+			if (collidableObjects[i]->collidesWith(collidableObjects[j]))
+			{
+				collidableObjects[i]->getCollided = true;
+				if (collidableObjects[i]->movable) {
+					collidableObjects[i]->handleCollision(collidableObjects[j]);
+
+				}
+				
+				if (collidableObjects[j]->movable) {
+					collidableObjects[j]->handleCollision(collidableObjects[i]);
+
+				}
+				//collidableObjects[j]->handleCollision(collidableObjects[i]);
+			}
+		}
+	}
+	return player->collidesWith(aI);
 }
 void Scene::zoom(float scrollOffset, glm::vec3 & cam_pos)
 {

@@ -139,7 +139,7 @@ void Window::display_callback(GLFWwindow* window)
 	}
 	else if(camera_mode == 1){
 		/* For the birds eye view */
-		glm::vec3 pos(0.0f, 50.0f, 0.0f);		// e  | Position of camera
+		glm::vec3 pos(0.0f, 100.0f, 0.0f);		// e  | Position of camera
 		glm::vec3 look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
 		glm::vec3 up(0.0f, 0.0f, 1.0f);			// up | What orientation "up" is 
 
@@ -151,9 +151,6 @@ void Window::display_callback(GLFWwindow* window)
 	scene->draw();
 	/* Move the balls around */
 	scene->moveBalls();
-	/* Test the collision detection */
-	if (scene->isCollide())
-		cout << " Collision detected " << endl;
 	/* Turn the player according to user controls */
 	if (turnLeft)
 	{

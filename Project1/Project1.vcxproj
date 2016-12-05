@@ -139,10 +139,14 @@
     <ClCompile Include="..\MatrixTransform.cpp" />
     <ClCompile Include="..\Node.cpp" />
     <ClCompile Include="..\Object.cpp" />
+    <ClCompile Include="..\PinchedCube.cpp" />
+    <ClCompile Include="..\Pyramid.cpp" />
     <ClCompile Include="..\Scene.cpp" />
     <ClCompile Include="..\shader.cpp" />
     <ClCompile Include="..\SkyBox.cpp" />
+    <ClCompile Include="..\SlantedTop.cpp" />
     <ClCompile Include="..\Sphere.cpp" />
+    <ClCompile Include="..\Trapezoid.cpp" />
     <ClCompile Include="..\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,11 +161,15 @@
     <ClInclude Include="..\MatrixTransform.h" />
     <ClInclude Include="..\Node.h" />
     <ClInclude Include="..\Object.h" />
+    <ClInclude Include="..\PinchedCube.h" />
+    <ClInclude Include="..\Pyramid.h" />
     <ClInclude Include="..\Scene.h" />
     <ClInclude Include="..\Shader.h" />
     <ClInclude Include="..\Shader2.h" />
     <ClInclude Include="..\SkyBox.h" />
+    <ClInclude Include="..\SlantedTop.h" />
     <ClInclude Include="..\Sphere.h" />
+    <ClInclude Include="..\Trapezoid.h" />
     <ClInclude Include="..\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +177,7 @@
     <None Include="..\shader.vert" />
     <None Include="..\shader2.frag" />
     <None Include="..\shader2.vert" />
+    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
