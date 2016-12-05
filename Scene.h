@@ -19,6 +19,7 @@
 #include "SkyBox.h"
 #include "Cube.h"
 #include "Sphere.h"
+#include "Pyramid.h"
 #include "MatrixTransform.h"
 #include "Ball.h"
 #include "City.h"

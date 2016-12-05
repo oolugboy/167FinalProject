@@ -18,6 +18,7 @@
 #include <limits>
 #include "Cube.h"
 #include "Sphere.h"
+#include "Pyramid.h"
 #include "MatrixTransform.h"
 #include <string>
 #include "time.h"

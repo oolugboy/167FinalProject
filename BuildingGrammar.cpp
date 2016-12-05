@@ -44,8 +44,8 @@ using namespace std;
 	B -> 0M				50%
 	B -> 1M				50%
 
-	M -> 2M				80%
-	M -> 2T				20%
+	M -> 2M				100%
+	M -> 2T				0%
 
 	T -> 3				50%
 	T -> 4				25%
@@ -58,8 +58,8 @@ using namespace std;
 const int FIXED_CHANCE_0M = 50;
 const int FIXED_CHANCE_1M = 50;
 //Set 2 : Symbol M
-const int FIXED_CHANCE_2M = 80;
-const int FIXED_CHANCE_2T = 20;
+const int FIXED_CHANCE_2M = 100;
+const int FIXED_CHANCE_2T = 0;
 //Set 3 : Symbol T
 const int FIXED_CHANCE_3 = 50;
 const int FIXED_CHANCE_4 = 25;
@@ -81,6 +81,7 @@ string gram_str;	//Grammar String
 
 Sphere * sphere;
 Cube * cube;
+Pyramid * pyramid;
 
 int height_counter = 0;
 
@@ -94,6 +95,7 @@ BuildingGrammar::BuildingGrammar()
 	//WARNING NEED TO MOVE THIS ELSEWHERE SO WE DON'T RUN OUT OF MEMORY
 	sphere = new Sphere(2, false);
 	cube = new Cube(false);
+	pyramid = new Pyramid(false);
 }
 
 //Deconstructor
@@ -173,7 +175,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				MatrixTransform * shapeTrans = new MatrixTransform();
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
-				shapeTrans->addChild(sphere);
+				shapeTrans->addChild(cube);
 				buildingTrans->addChild(shapeTrans);
 				cout << "Building Cube" << endl;
 				break;
@@ -193,7 +195,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				MatrixTransform * shapeTrans = new MatrixTransform();
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
-				shapeTrans->addChild(cube);
+				shapeTrans->addChild(pyramid);
 				buildingTrans->addChild(shapeTrans);
 				cout << "Building Sphere" << endl;
 				break;
@@ -203,7 +205,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				MatrixTransform * shapeTrans = new MatrixTransform();
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
-				shapeTrans->addChild(sphere);
+				shapeTrans->addChild(pyramid);
 				buildingTrans->addChild(shapeTrans);
 				cout << "Building Sphere" << endl;
 				break;
@@ -213,7 +215,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				MatrixTransform * shapeTrans = new MatrixTransform();
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
-				shapeTrans->addChild(cube);
+				shapeTrans->addChild(pyramid);
 				buildingTrans->addChild(shapeTrans);
 				cout << "Building Sphere" << endl;
 				break;
@@ -268,7 +270,8 @@ bool BuildingGrammar::ParseString()
 			{
 				finished = false;
 				//Rule 3: M -> 2M (100%)
-				if (choice - CHANCE_2M <= 0 )
+				if (choice - CHANCE_2M <= 0)
+				{
 					temp_str.append("2M");
 					height_counter += 1;
 					if (height_counter >= 5)
@@ -276,6 +279,7 @@ bool BuildingGrammar::ParseString()
 						CHANCE_2M = 80;
 						CHANCE_2T = 20;
 					}
+				}
 				//Rule 4: M -> 2T (0%)
 				else if (choice - (CHANCE_2M + CHANCE_2T) <= 0 )
 					temp_str.append("2T");

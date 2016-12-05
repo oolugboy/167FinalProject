@@ -44,7 +44,7 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 
 	/*~~ SHAPE GRAMMAR TESTING*/
 	BuildingGrammar * buildingGram = new BuildingGrammar();
-	buildingTrans = buildingGram->Build(glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(2.0f,2.0f,2.0f), 45.0f);
+	buildingTrans = buildingGram->Build(glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(0.5f,0.5f,0.5f), 45.0f);
 	worldGroup->addChild(buildingTrans);
 	/*~~ END */
 	
