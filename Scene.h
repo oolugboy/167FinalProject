@@ -3,6 +3,7 @@
 
 
 #include <iostream>
+#include <stdlib.h>
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #include <OpenGL/glext.h>
@@ -35,6 +36,7 @@ class Scene
 		GLint m_shaderProgram1;
 		GLint m_shaderProgram2;
 		Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2);
+		void randomInitial(int seed);
 		void draw();
 		~Scene();
 		SkyBox * skyBox;

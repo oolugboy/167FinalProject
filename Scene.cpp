@@ -15,6 +15,13 @@ MatrixTransform * buildingTrans;
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 {
 	/* Initialize the required variables */
+
+	srand(0);
+	for (int i = 0; i < 10; i++) {
+		printf("%f %f %f\n", (rand() % 10000) / 100.0f, (rand() % 10000) / 100.0f, (rand() % 10000) / 100.0f );
+	}
+
+
 	t = clock();
 	m_shaderProgram1 = shaderProgram1;
 	m_shaderProgram2 = shaderProgram2;
@@ -29,14 +36,41 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	genSphere = new Sphere(1.0f, false);
 	genCube = new Cube(true);
 
-	player = new Ball(true, glm::vec3(0,0,0));	
-	player->sphere = genSphere;
-	playerTrans = glm::vec3(0.0f, 0.0f, 0.0f);
+	//player = new Ball(true, glm::vec3(0,0,0));	
+	//player->sphere = genSphere;
+	//playerTrans = glm::vec3(0.0f, 0.0f, 0.0f);
 
-	aI = new Ball(false, glm::vec3(0, 0, 0));
-	aI->sphere = genSphere;
+	//aI = new Ball(false, glm::vec3(0, 0, 0));
+	//aI->sphere = genSphere;
 
-	city = new City(100);
+	MatrixTransform* cube1 = new MatrixTransform();
+	glm::mat4 cube1_matrix = cube1->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(4.0f, 0.0f, 4.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(3.0f));
+	cube1->transformMatrix = cube1_matrix;
+	cube1->addChild(genCube);
+
+	MatrixTransform* cube2 = new MatrixTransform();
+	glm::mat4 cube2_matrix = cube2->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(5.5f, 0.0f, 2.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(2.0f));
+	cube2->transformMatrix = cube2_matrix;
+	cube2->addChild(genCube);
+
+
+	city = new City(10);
+
+	//worldGroup->addChild(cube1);
+	//worldGroup->addChild(cube2);
+
+	if (city->addObject(cube1_matrix)) {
+		printf("add cube1 in city correctly \n");
+		worldGroup->addChild(cube1);
+	}
+
+
+	if (city->addObject(cube2_matrix)) {
+		printf("add cube2 in city correctly \n");
+		worldGroup->addChild(cube2);
+	}
+
+
 	
 	buildGraph();
 	/* Initialize the sizes */
@@ -45,9 +79,21 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	/*~~ SHAPE GRAMMAR TESTING*/
 	BuildingGrammar * buildingGram = new BuildingGrammar();
 	buildingTrans = buildingGram->Build(glm::vec3(3.0f, 0.0f, 0.0f));
+	buildingTrans->transformMatrix = cube2_matrix;
 	worldGroup->addChild(buildingTrans);
 	/*~~ END */
 	
+}
+
+void Scene::randomInitial(int seed) {
+	if (seed >= 0) { srand(0); }
+	else { srand(time(NULL)); }
+
+	int world_grids = 100;
+	city = new City(world_grids);
+	for (int i = 0; i < world_grids; i++) {
+
+	}
 }
 void Scene::draw()
 {
@@ -57,11 +103,18 @@ void Scene::draw()
 	skyBox->draw(m_shaderProgram1);	
 	/** Now to use */
 	glUseProgram(m_shaderProgram2);
-	worldGroup->draw(glm::mat4(1.0f));
+
+	//Since skybox is fix size, so scale down the world to make the world looks bigger
+	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
+	worldGroup->draw(scale);
 	
 	//cout << " It took this " << t << " clicks to render the robots in this frame " << endl;
 	worldGroup->update();
-	city->drawCurves();
+
+	if (Window::debug) {
+		//TODO: draw cube boundary only if debug flag is on
+		//city->drawCurves();
+	}
 }
 void Scene::changePlayerDirection(float direction, bool posAccel)
 {
@@ -112,7 +165,7 @@ glm::vec3 Scene::trackBallMapping(glm::vec3 point, int width, int height)
 /* Reset the acceleration */
 void Scene::acceleratePlayer(bool posAccel)
 {
-	player->accelerate(posAccel);
+	//player->accelerate(posAccel);
 }
 void Scene::moveBalls()
 {	 
@@ -124,57 +177,58 @@ void Scene::moveBalls()
 	//S = ut + 1/2(a(t)^2)	
 	/*cout << " The acceleration is ";
 	player->printVector(player->acceleration);*/
-	glm::vec3 diff = (player->initVelocity * time) + (0.50f * player->acceleration * pow(time, 2));
-	cout << " The diff is ";
-	player->printVector(diff);
-	playerTrans = playerTrans + diff;
-	/*cout << " We are translating  ";
-	player->printVector(playerTrans); */
-	playerBallTrans->transformMatrix = glm::translate(glm::mat4(1.0f), playerTrans);
-	ballBTrans->transformMatrix = ballBTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	//glm::vec3 diff = (player->initVelocity * time) + (0.50f * player->acceleration * pow(time, 2));
+	//cout << " The diff is ";
+	//player->printVector(diff);
+	//playerTrans = playerTrans + diff;
+	///*cout << " We are translating  ";
+	//player->printVector(playerTrans); */
+	//playerBallTrans->transformMatrix = glm::translate(glm::mat4(1.0f), playerTrans);
+	//ballBTrans->transformMatrix = ballBTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 }
 void Scene::buildGraph()
 {
 	/* Now to build the tree */	
-	worldGroup->addChild(playerBallTrans);	
-	worldGroup->addChild(ballBTrans);
+	//worldGroup->addChild(playerBallTrans);	
+	//worldGroup->addChild(ballBTrans);
 	worldGroup->addChild(city);
 
-	playerBallTrans->addChild(player);
-	ballBTrans->addChild(aI);
+	//playerBallTrans->addChild(player);
+	//ballBTrans->addChild(aI);
 
-	playerBallTrans->addChild(boundBoxATrans);
-	ballBTrans->addChild(boundBoxBTrans);
+	//playerBallTrans->addChild(boundBoxATrans);
+	//ballBTrans->addChild(boundBoxBTrans);
 
-	boundBoxATrans->addChild(genCube);
-	boundBoxBTrans->addChild(genCube);
+	//boundBoxATrans->addChild(genCube);
+	//boundBoxBTrans->addChild(genCube);
 }
 void Scene::initializeObjects()
 {
 /*	playerBallTrans->transformMatrix = playerBallTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(-12.0f, 0.0f, 0.0f));
 	playerBallTrans->transformMatrix = playerBallTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));*/
 
-	ballBTrans->transformMatrix = ballBTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -12.0f));	
+	//ballBTrans->transformMatrix = ballBTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -12.0f));	
 
-	/* add all the objects to the vector */
-	collidableObjects.push_back(player);
-	collidableObjects.push_back(aI);
+	///* add all the objects to the vector */
+	//collidableObjects.push_back(player);
+	//collidableObjects.push_back(aI);
 }
 bool Scene::isCollide()
 {
-	int size = collidableObjects.size();
-	for (int i = 0; i < size; i++)
-	{
-		for (int j = i + 1; j < size; j++)
-		{
-			if (collidableObjects[i]->collidesWith(collidableObjects[j]))
-			{
-				collidableObjects[i]->handleCollision(collidableObjects[j]);
-				collidableObjects[j]->handleCollision(collidableObjects[i]);
-			}
-		}
-	}
-	return player->collidesWith(aI);
+	//int size = collidableObjects.size();
+	//for (int i = 0; i < size; i++)
+	//{
+	//	for (int j = i + 1; j < size; j++)
+	//	{
+	//		if (collidableObjects[i]->collidesWith(collidableObjects[j]))
+	//		{
+	//			collidableObjects[i]->handleCollision(collidableObjects[j]);
+	//			collidableObjects[j]->handleCollision(collidableObjects[i]);
+	//		}
+	//	}
+	//}
+	//return player->collidesWith(aI);
+	return false;
 }
 void Scene::zoom(float scrollOffset, glm::vec3 & cam_pos)
 {
@@ -186,7 +240,7 @@ void Scene::zoom(float scrollOffset, glm::vec3 & cam_pos)
 }
 void Scene::jumpPlayer(bool accel)
 {
-	player->jump(accel);
+	//player->jump(accel);
 }
 Scene::~Scene()
 {

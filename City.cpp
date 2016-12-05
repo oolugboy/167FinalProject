@@ -16,9 +16,9 @@ City::City(int intervals)
 
 void City::initial() {
 	for (int z = 0; z < world_intervals; z++) {
-		std::vector<bool> horizonal;
+		std::vector<int> horizonal;
 		for (int x = 0; x < world_intervals; x++) {
-			horizonal.push_back(false);
+			horizonal.push_back(-1);
 		}
 		this->occupation.push_back(horizonal);
 	}
@@ -99,26 +99,89 @@ bool City::addObject(glm::mat4 drawMatrix) {
 	//glReadPixels(xpos, Window::height - ypos, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &res);
 	//std::cout << "Select control point (" << (unsigned int)res[0] << "," << (unsigned int)res[1] << "," << (unsigned int)res[2] << "," << (unsigned int)res[3] << ")" << std::endl;
 
-
-	for (int z = 0; z < world_intervals; z++) {
-		for (int x = 0; x < world_intervals; z++) {
-			glm::vec3 p0 = getPosition(x, z);			//left top
-			glm::vec3 p1 = getPosition(x, z + 1);		//left bottom
-			glm::vec3 p2 = getPosition(x + 1, z);		//right top
-			glm::vec3 p3 = getPosition(x + 1, z + 1);	//right bottom
-
-
-
-		}
+	glm::vec3 new_cube_vertices[4];
+	for (int i = 0; i < 4; i++) {
+		glm::vec4 new_point = drawMatrix * glm::vec4(cube_vertices[i], 1.0);
+		new_cube_vertices[i] = glm::vec3(new_point);
 	}
 
-	return true;
+	float m[4], b[4];
+
+	m[0] = (new_cube_vertices[1].z - new_cube_vertices[0].z) / (new_cube_vertices[1].x - new_cube_vertices[0].x);
+	b[0] = (-1.0f * m[0] * new_cube_vertices[0].x + new_cube_vertices[0].z);
+
+	m[1] = (new_cube_vertices[2].z - new_cube_vertices[1].z) / (new_cube_vertices[2].x - new_cube_vertices[1].x);
+	b[1] = (-1.0f * m[1] * new_cube_vertices[1].x + new_cube_vertices[1].z);
+
+	m[2] = (new_cube_vertices[3].z - new_cube_vertices[2].z) / (new_cube_vertices[3].x - new_cube_vertices[2].x);
+	b[2] = (-1.0f * m[2] * new_cube_vertices[2].x + new_cube_vertices[2].z);
+
+	m[3] = (new_cube_vertices[0].z - new_cube_vertices[3].z) / (new_cube_vertices[0].x - new_cube_vertices[3].x);
+	b[3] = (-1.0f * m[3] * new_cube_vertices[3].x + new_cube_vertices[3].z);
+
+
+	bool isOkay = true;
+	int object_id = object_count + 1;
+	for (int z = 0; z < world_intervals && isOkay; z++) {
+		for (int x = 0; x < world_intervals && isOkay; x++) {
+
+			glm::vec3 p[4];
+			p[0] = getPosition(x, z);			//left top
+			p[1] = getPosition(x, z + 1);		//left bottom
+			p[2] = getPosition(x + 1, z);		//right top
+			p[3] = getPosition(x + 1, z + 1);	//right bottom
+
+			bool isOccured = false;
+			for (int i = 0; i < 4; i++) {
+				float xpos = p[i].x;
+				float zpos = p[i].z;
+
+				
+				if (zpos <= (m[0] * xpos + b[0]) && //test for line 1, cube_p0 and cube_p1
+					zpos <= (m[1] * xpos + b[1]) && //test for line 2, cube_p1 and cube_p2
+					zpos >= (m[3] * xpos + b[2]) && //test for line 3, cube_p2 and cube_p3
+					zpos >= (m[2] * xpos + b[3]))   //test for line 4, cube_p3 and cube_p0
+				{
+					isOccured = true;
+					break;
+				}
+
+			}
+
+			if (isOccured) { //object occurs grid (x,z)
+				if (occupation[z][x] != -1) { //grid (x,z) is occured by other object before
+					isOkay = false;
+					printf("Object %d: cannnot occured position (%d,%d) because object %d occured already \n", object_id, x, z, occupation[z][x]);
+				}
+				else {
+					occupation[z][x] = object_id;
+					//printf("Object %d: occured position (%d,%d)\n", object_id, x, z);
+				}
+			}
+		}
+
+	}
+
+	if (!isOkay) { //failure to add object, need to undo the mark for this object
+		for (int z = 0; z < world_intervals && isOkay; z++) {
+			for (int x = 0; x < world_intervals && isOkay; x++) {
+				if (occupation[z][x] == object_id) {
+					occupation[z][x] = -1; 
+				}
+			}
+		}
+	}
+	else { //successful to add object, good to go
+		object_count++;
+	}
+
+	return isOkay;
 }
 
 void City::draw(glm::mat4 cMatrix) {
 
 	cityShader->Use();
-	glm::mat4 modelview = Window::V * toWorld;
+	glm::mat4 modelview = Window::V * cMatrix * toWorld ;
 
 	glUniformMatrix4fv(glGetUniformLocation(cityShader->Program, "modelview"), 1, GL_FALSE, glm::value_ptr(modelview));
 	glUniformMatrix4fv(glGetUniformLocation(cityShader->Program, "projection"), 1, GL_FALSE, glm::value_ptr(Window::P));
@@ -139,6 +202,10 @@ void City::draw(glm::mat4 cMatrix) {
 	glBindVertexArray(0);
 
 	Group::draw(cMatrix * toWorld);
+
+	if (Window::debug) {
+		drawCurves(cMatrix);
+	}
 }
 
 //void City::draw(Shader shader)
@@ -186,6 +253,18 @@ void City::drawCurves()
 
 	for (int i = 0; i < curves_h.size(); i++) {
 		curves_h[i]->draw(*curveShader);
+	}
+}
+
+void City::drawCurves(glm::mat4 cMatrix)
+{
+	for (int i = 0; i < curves_v.size(); i++) {
+		curves_v[i]->draw(*curveShader, cMatrix);
+	}
+
+
+	for (int i = 0; i < curves_h.size(); i++) {
+		curves_h[i]->draw(*curveShader, cMatrix);
 	}
 }
 
