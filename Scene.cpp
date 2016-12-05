@@ -38,15 +38,15 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 
 	city = new City(100);
 	
+	/*~~ SHAPE GRAMMAR TESTING*/
+	BuildingGrammar * buildingGram = new BuildingGrammar();
+	buildingTrans = buildingGram->Build(glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(0.5f,0.5f,0.5f), 45.0f);
+	/*~~ END */
+	
 	buildGraph();
 	/* Initialize the sizes */
 	initializeObjects();
 
-	/*~~ SHAPE GRAMMAR TESTING*/
-	BuildingGrammar * buildingGram = new BuildingGrammar();
-	buildingTrans = buildingGram->Build(glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(0.5f,0.5f,0.5f), 45.0f);
-	worldGroup->addChild(buildingTrans);
-	/*~~ END */
 	
 }
 void Scene::draw()
@@ -138,6 +138,9 @@ void Scene::buildGraph()
 	/* Now to build the tree */	
 	worldGroup->addChild(playerBallTrans);	
 	worldGroup->addChild(ballBTrans);
+	/* ~BUILDING GRAMMAR TESTING */
+	worldGroup->addChild(buildingTrans);
+	/* ~ END */
 	worldGroup->addChild(city);
 
 	playerBallTrans->addChild(player);

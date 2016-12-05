@@ -145,6 +145,7 @@
     <ClCompile Include="..\SkyBox.cpp" />
     <ClCompile Include="..\SlantedTop.cpp" />
     <ClCompile Include="..\Sphere.cpp" />
+    <ClCompile Include="..\Trapezoid.cpp" />
     <ClCompile Include="..\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +167,7 @@
     <ClInclude Include="..\SkyBox.h" />
     <ClInclude Include="..\SlantedTop.h" />
     <ClInclude Include="..\Sphere.h" />
+    <ClInclude Include="..\Trapezoid.h" />
     <ClInclude Include="..\Window.h" />
   </ItemGroup>
   <ItemGroup>

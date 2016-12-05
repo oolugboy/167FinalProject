@@ -21,6 +21,7 @@
 #include "Sphere.h"
 #include "Pyramid.h"
 #include "SlantedTop.h"
+#include "Trapezoid.h"
 #include "MatrixTransform.h"
 #include "Ball.h"
 #include "City.h"

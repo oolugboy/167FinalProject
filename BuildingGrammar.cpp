@@ -83,6 +83,7 @@ Sphere * sphere;
 Cube * cube;
 Pyramid * pyramid;
 SlantedTop * slantedTop;
+Trapezoid * trapezoid;
 
 int height_counter = 0;
 
@@ -98,6 +99,7 @@ BuildingGrammar::BuildingGrammar()
 	cube = new Cube(false);
 	pyramid = new Pyramid(false);
 	slantedTop = new SlantedTop(false);
+	trapezoid = new Trapezoid(false);
 }
 
 //Deconstructor
@@ -197,7 +199,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				MatrixTransform * shapeTrans = new MatrixTransform();
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
-				shapeTrans->addChild(cube);
+				shapeTrans->addChild(trapezoid);
 				buildingTrans->addChild(shapeTrans);
 				cout << "Building Sphere" << endl;
 				break;
