@@ -35,16 +35,31 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	aI = new Ball(false, glm::vec3(0, 0, -25.0f));
 	ballBTrans->transformMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -25.0f));
 	aI->sphere = genSphere;
-	
+
+	city = new City(100);
+
+	/*~~ SHAPE GRAMMAR TESTING*/
+	BuildingGrammar * buildingGram = new BuildingGrammar();
+	buildingTrans = buildingGram->Build(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 45.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(-2.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 20.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 80.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 30.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(2.0f, 0.0f, 5.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f);
+	worldGroup->addChild(buildingTrans);
+	buildingTrans = buildingGram->Build(glm::vec3(-2.0f, 0.0f, 5.0f), glm::vec3(0.5f, 0.5f, 0.5f), 68.0f);
+	worldGroup->addChild(buildingTrans);
+	/*~~ END */
+
 	buildGraph();
 	/* Initialize the sizes */
 	initializeObjects();
 
-	/*~~ SHAPE GRAMMAR TESTING*/
-	BuildingGrammar * buildingGram = new BuildingGrammar();
-	/*buildingTrans = buildingGram->Build(glm::vec3(0.0f, 0.0f, 0.0f));
-	worldGroup->addChild(buildingTrans);*/
-	/*~~ END */
 	
 }
 void Scene::draw()
@@ -64,6 +79,7 @@ void Scene::draw()
 
 	//cout << " It took this " << t << " clicks to render the robots in this frame " << endl;
 	worldGroup->update();
+	city->drawCurves();
 
 }
 void Scene::changePlayerDirection(float direction, bool posAccel)
@@ -135,6 +151,7 @@ void Scene::buildGraph()
 	/* Now to build the tree */	
 	worldGroup->addChild(playerBallTrans);	
 	worldGroup->addChild(ballBTrans);
+	worldGroup->addChild(city);
 
 	playerBallTrans->addChild(player);
 	ballBTrans->addChild(aI);
