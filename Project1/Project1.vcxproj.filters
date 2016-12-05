@@ -123,5 +123,6 @@
     <None Include="..\shader2.frag" />
     <None Include="..\shader2.vert" />
     <None Include="packages.config" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

@@ -25,6 +25,8 @@ class Object : public Node
 public:
 	Object();
 	void draw(glm::mat4 cMatrix);
+	bool movable = false;
+	bool getCollided = false;
 	void update();
 	virtual bool collidesWith(Object * other) = 0;
 	virtual void handleCollision(Object * other) = 0;
@@ -39,6 +41,7 @@ public:
 	float xWidth, yWidth, zWidth;
 	float mass;	
 	glm::vec3 finalVelocity;
+	glm::vec3 initVelocity;
 	glm::vec3 acceleration;
 	
 };

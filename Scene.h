@@ -49,6 +49,7 @@ class Scene
 		MatrixTransform * ballBTrans;
 		vector <glm::mat4 > origPos;
 		glm::vec3 playerTrans;
+		glm::vec3 aITrans;
 		glm::mat4 worldMatTrans;
 		Ball * player;
 		Ball * aI;
