@@ -20,6 +20,7 @@
 #include "Cube.h"
 #include "Sphere.h"
 #include "Pyramid.h"
+#include "SlantedTop.h"
 #include "MatrixTransform.h"
 #include "Ball.h"
 #include "City.h"

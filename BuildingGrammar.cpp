@@ -13,9 +13,9 @@ using namespace std;
 	Box					100%
 
 -Top:
-	Box Roof			50%
-	Pyramid				25%
-	Trapezoid Prism		25%
+	Box Roof			40%
+	Pyramid				30%
+	Trapezoid Prism		30%
 */
 
 /*------Symbol Table
@@ -47,9 +47,9 @@ using namespace std;
 	M -> 2M				100%
 	M -> 2T				0%
 
-	T -> 3				50%
-	T -> 4				25%
-	T -> 5				25%
+	T -> 3				40%
+	T -> 4				30%
+	T -> 5				30%
 */
 
 //Chances for each rule
@@ -61,9 +61,9 @@ const int FIXED_CHANCE_1M = 50;
 const int FIXED_CHANCE_2M = 100;
 const int FIXED_CHANCE_2T = 0;
 //Set 3 : Symbol T
-const int FIXED_CHANCE_3 = 50;
-const int FIXED_CHANCE_4 = 25;
-const int FIXED_CHANCE_5 = 25;
+const int FIXED_CHANCE_3 = 40;
+const int FIXED_CHANCE_4 = 30;
+const int FIXED_CHANCE_5 = 30;
 
 //Set 1 : Symbol B
 int CHANCE_0M;
@@ -82,6 +82,7 @@ string gram_str;	//Grammar String
 Sphere * sphere;
 Cube * cube;
 Pyramid * pyramid;
+SlantedTop * slantedTop;
 
 int height_counter = 0;
 
@@ -96,6 +97,7 @@ BuildingGrammar::BuildingGrammar()
 	sphere = new Sphere(2, false);
 	cube = new Cube(false);
 	pyramid = new Pyramid(false);
+	slantedTop = new SlantedTop(false);
 }
 
 //Deconstructor
@@ -185,7 +187,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				MatrixTransform * shapeTrans = new MatrixTransform();
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
-				shapeTrans->addChild(sphere);
+				shapeTrans->addChild(cube);
 				buildingTrans->addChild(shapeTrans);
 				cout << "Building Sphere" << endl;
 				break;
@@ -195,7 +197,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				MatrixTransform * shapeTrans = new MatrixTransform();
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
-				shapeTrans->addChild(pyramid);
+				shapeTrans->addChild(cube);
 				buildingTrans->addChild(shapeTrans);
 				cout << "Building Sphere" << endl;
 				break;
@@ -215,7 +217,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				MatrixTransform * shapeTrans = new MatrixTransform();
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
-				shapeTrans->addChild(pyramid);
+				shapeTrans->addChild(slantedTop);
 				buildingTrans->addChild(shapeTrans);
 				cout << "Building Sphere" << endl;
 				break;

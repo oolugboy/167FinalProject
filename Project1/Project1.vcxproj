@@ -143,6 +143,7 @@
     <ClCompile Include="..\Scene.cpp" />
     <ClCompile Include="..\shader.cpp" />
     <ClCompile Include="..\SkyBox.cpp" />
+    <ClCompile Include="..\SlantedTop.cpp" />
     <ClCompile Include="..\Sphere.cpp" />
     <ClCompile Include="..\Window.cpp" />
   </ItemGroup>
@@ -163,6 +164,7 @@
     <ClInclude Include="..\Shader.h" />
     <ClInclude Include="..\Shader2.h" />
     <ClInclude Include="..\SkyBox.h" />
+    <ClInclude Include="..\SlantedTop.h" />
     <ClInclude Include="..\Sphere.h" />
     <ClInclude Include="..\Window.h" />
   </ItemGroup>
