@@ -29,11 +29,9 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	genSphere = new Sphere(1.0f, false);
 	genCube = new Cube(true);
 
-	player = new Ball(true, glm::vec3(0.0f,1,0.0f));	
-	player->sphere = genSphere;	
+	player = new Ball(true, glm::vec3(0.0f,1,0.0f), playerBallTrans);		
 
-	aI = new Ball(false, glm::vec3(0.0f, 1.0f, -25.0f));
-	aI->sphere = genSphere;
+	aI = new Ball(false, glm::vec3(0.0f, 1.0f, -25.0f), ballBTrans);
 
 	city = new City(100);
 
@@ -59,7 +57,7 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	/* Initialize the sizes */
 	initializeObjects();
 
-	aI->mass = 10000.0f;
+	//aI->mass = 10000.0f;
 	
 }
 void Scene::draw()
@@ -70,8 +68,7 @@ void Scene::draw()
 	skyBox->draw(m_shaderProgram1);	
 	/** Now to use */
 	glUseProgram(m_shaderProgram2);
-	worldGroup->draw(glm::mat4(1.0f));
-	
+	worldGroup->draw(glm::mat4(1.0f));	
 
 	/* Test the collision detection */
 	if (isCollide())
@@ -124,6 +121,7 @@ void Scene::acceleratePlayer(bool posAccel)
 	player->accelerate(posAccel);
 	aI->accelerate(false);
 }
+/* Move the moveBalls to the updateVelocity */
 void Scene::moveBalls()
 {	 
 	/* The amount of time before the previous call*/
@@ -138,35 +136,30 @@ void Scene::moveBalls()
 	diff = (player->initVelocity * time) + (0.50f * player->acceleration * pow(time, 2));
 	cout << " The diff is ";
 	player->printVector(diff);	
-	playerBallTrans->transformMatrix = playerBallTrans->transformMatrix * glm::translate(glm::mat4(1.0f), diff);
+	playerBallTrans->transformMatrix = glm::translate(glm::mat4(1.0f), diff) * playerBallTrans->transformMatrix;
 	
 	/* For the aI part */
 	diff = (aI->initVelocity * time) + (0.50f * aI->acceleration * pow(time, 2));
 	cout << " The aI acceleration is ";
 	player->printVector(aI->acceleration);
-	ballBTrans->transformMatrix = ballBTrans->transformMatrix * glm::translate(glm::mat4(1.0f), diff); 
+	ballBTrans->transformMatrix = glm::translate(glm::mat4(1.0f), diff) * ballBTrans->transformMatrix;
 }
 void Scene::buildGraph()
 {
 	/* Now to build the tree */	
-	worldGroup->addChild(playerBallTrans);	
-	worldGroup->addChild(ballBTrans);
+	worldGroup->addChild(player);	
+	worldGroup->addChild(aI);
 	worldGroup->addChild(city);
 
-	playerBallTrans->addChild(player);
-	ballBTrans->addChild(aI);
+	playerBallTrans->addChild(genCube);
+	playerBallTrans->addChild(genSphere);
 
-	playerBallTrans->addChild(boundBoxATrans);
-	ballBTrans->addChild(boundBoxBTrans);
-
-	boundBoxATrans->addChild(genCube);
-	boundBoxBTrans->addChild(genCube);
+	ballBTrans->addChild(genCube);
+	ballBTrans->addChild(genSphere);
 }
 void Scene::initializeObjects()
 {
 	/* Set the initial position for the object */
-	ballBTrans->transformMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, -25.0f));
-	playerBallTrans->transformMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	/* add all the objects to the vector */
 	collidableObjects.push_back(player);
@@ -195,9 +188,7 @@ bool Scene::isCollide()
 				//collidableObjects[j]->handleCollision(collidableObjects[i]);
 			}
 		}
-	}
-	/* Update their position after collisions */
-	moveBalls();
+	}	
 	return player->collidesWith(aI);
 }
 void Scene::zoom(float scrollOffset, glm::vec3 & cam_pos)

@@ -149,7 +149,7 @@ void Window::display_callback(GLFWwindow* window)
 	/** Draw the scene */
 	scene->draw();
 	/* Move the balls around */
-	scene->moveBalls();
+//	scene->moveBalls();
 	/* Turn the player according to user controls */
 	if (turnLeft)
 	{

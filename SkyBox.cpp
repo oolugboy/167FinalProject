@@ -12,7 +12,7 @@ SkyBox::SkyBox()
 	faces[4] = "miramar_bk.ppm";
 	faces[5] = "miramar_ft.ppm";
 
-	toWorld = glm::mat4(1.0f) * glm::scale(glm::mat4(1.0f), glm::vec3(24.0f, 24.0f, 24.0f));
+	toWorld = glm::mat4(1.0f) * glm::scale(glm::mat4(1.0f), glm::vec3(500.0f, 500.0f, 500.0f));
 	skyBoxTexId = loadCubeMap(faces);
 	loadCubeVertices(skyBoxVertices);
 }
