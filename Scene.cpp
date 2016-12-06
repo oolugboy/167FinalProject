@@ -29,11 +29,10 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	genSphere = new Sphere(1.0f, false);
 	genCube = new Cube(true);
 
-	player = new Ball(true, glm::vec3(0,0,0));	
+	player = new Ball(true, glm::vec3(0.0f,1,0.0f));	
 	player->sphere = genSphere;	
 
-	aI = new Ball(false, glm::vec3(0, 0, -25.0f));
-	ballBTrans->transformMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -25.0f));
+	aI = new Ball(false, glm::vec3(0.0f, 1.0f, -25.0f));
 	aI->sphere = genSphere;
 
 	city = new City(100);
@@ -60,6 +59,7 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	/* Initialize the sizes */
 	initializeObjects();
 
+	aI->mass = 10000.0f;
 	
 }
 void Scene::draw()
@@ -164,6 +164,10 @@ void Scene::buildGraph()
 }
 void Scene::initializeObjects()
 {
+	/* Set the initial position for the object */
+	ballBTrans->transformMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, -25.0f));
+	playerBallTrans->transformMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
 	/* add all the objects to the vector */
 	collidableObjects.push_back(player);
 	collidableObjects.push_back(aI);
@@ -192,6 +196,8 @@ bool Scene::isCollide()
 			}
 		}
 	}
+	/* Update their position after collisions */
+	moveBalls();
 	return player->collidesWith(aI);
 }
 void Scene::zoom(float scrollOffset, glm::vec3 & cam_pos)
