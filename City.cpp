@@ -99,72 +99,164 @@ bool City::addObject(glm::mat4 drawMatrix) {
 	//glReadPixels(xpos, Window::height - ypos, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &res);
 	//std::cout << "Select control point (" << (unsigned int)res[0] << "," << (unsigned int)res[1] << "," << (unsigned int)res[2] << "," << (unsigned int)res[3] << ")" << std::endl;
 
-	glm::vec3 new_cube_vertices[4];
+	glm::vec3 temp_cube_vertices[4];
 	for (int i = 0; i < 4; i++) {
 		glm::vec4 new_point = drawMatrix * glm::vec4(cube_vertices[i], 1.0);
-		new_cube_vertices[i] = glm::vec3(new_point);
+		temp_cube_vertices[i] = glm::vec3(new_point);
+		if (temp_cube_vertices[i].x > world_intervals / 2.0f || temp_cube_vertices[i].x < world_intervals / -2.0f) {
+			//printf("Out of Bound\n");
+			return false;
+		}
+		if (temp_cube_vertices[i].z > world_intervals / 2.0f || temp_cube_vertices[i].z < world_intervals / -2.0f) {
+			//printf("Out of Bound\n");
+			return false;
+		}
 	}
 
-	float m[4], b[4];
+	glm::vec3 new_cube_vertices[4];
+	float mostLeftPos = -100000.0f;
+	float mostTopPos = -100000.0f;
+	float mostRightPos = 100000.0f;
+	float mostBottomPos = 100000.0f;
+	for (int i = 0; i < 4; i++) {
+		if (mostLeftPos < temp_cube_vertices[i].x) {
+			new_cube_vertices[0] = temp_cube_vertices[i];
+			mostLeftPos = temp_cube_vertices[i].x;
+		}
+		else if (mostLeftPos == temp_cube_vertices[i].x && new_cube_vertices[0].z < temp_cube_vertices[i].z) {
+			new_cube_vertices[0] = temp_cube_vertices[i];
+		}
+
+		if (mostTopPos < temp_cube_vertices[i].z) {
+			new_cube_vertices[1] = temp_cube_vertices[i];
+			mostTopPos = temp_cube_vertices[i].z;
+		}
+		else if (mostTopPos == temp_cube_vertices[i].z && new_cube_vertices[1].x > temp_cube_vertices[i].x) {
+			new_cube_vertices[1] = temp_cube_vertices[i];
+		}
+
+		if (mostRightPos > temp_cube_vertices[i].x) {
+			new_cube_vertices[2] = temp_cube_vertices[i];
+			mostRightPos = temp_cube_vertices[i].x;
+		}
+		else if (mostRightPos == temp_cube_vertices[i].x && new_cube_vertices[2].z > temp_cube_vertices[i].z) {
+			new_cube_vertices[2] = temp_cube_vertices[i];
+		}
+
+		if (mostBottomPos > temp_cube_vertices[i].z) {
+			new_cube_vertices[3] = temp_cube_vertices[i];
+			mostBottomPos = temp_cube_vertices[i].z;
+		}
+		else if (mostBottomPos == temp_cube_vertices[i].z && new_cube_vertices[3].x < temp_cube_vertices[i].x) {
+			new_cube_vertices[3] = temp_cube_vertices[i];
+		}
+	}
+
+
+	float m[6], b[6];
 
 	m[0] = (new_cube_vertices[1].z - new_cube_vertices[0].z) / (new_cube_vertices[1].x - new_cube_vertices[0].x);
+	//printf("z1 - z0 = %f - %f = %f\n", new_cube_vertices[1].z, new_cube_vertices[0].z, new_cube_vertices[1].z - new_cube_vertices[0].z);
+	//printf("x1 - x0 = %f - %f = %f\n", new_cube_vertices[1].x, new_cube_vertices[0].x, new_cube_vertices[1].x - new_cube_vertices[0].x);
+	//printf("m0 = (z1 - z0) / (x1 - x0) = %f = %f\n", m[0], (new_cube_vertices[1].z - new_cube_vertices[0].z) / (new_cube_vertices[1].x - new_cube_vertices[0].x));
 	b[0] = (-1.0f * m[0] * new_cube_vertices[0].x + new_cube_vertices[0].z);
 
-	m[1] = (new_cube_vertices[2].z - new_cube_vertices[1].z) / (new_cube_vertices[2].x - new_cube_vertices[1].x);
-	b[1] = (-1.0f * m[1] * new_cube_vertices[1].x + new_cube_vertices[1].z);
+	m[1] = (new_cube_vertices[2].x - new_cube_vertices[1].x) / (new_cube_vertices[2].z - new_cube_vertices[1].z);
+	b[1] = (-1.0f * m[1] * new_cube_vertices[1].z + new_cube_vertices[1].x);
 
 	m[2] = (new_cube_vertices[3].z - new_cube_vertices[2].z) / (new_cube_vertices[3].x - new_cube_vertices[2].x);
 	b[2] = (-1.0f * m[2] * new_cube_vertices[2].x + new_cube_vertices[2].z);
 
-	m[3] = (new_cube_vertices[0].z - new_cube_vertices[3].z) / (new_cube_vertices[0].x - new_cube_vertices[3].x);
-	b[3] = (-1.0f * m[3] * new_cube_vertices[3].x + new_cube_vertices[3].z);
+	m[3] = (new_cube_vertices[0].x - new_cube_vertices[3].x) / (new_cube_vertices[0].z - new_cube_vertices[3].z);
+	b[3] = (-1.0f * m[3] * new_cube_vertices[3].z + new_cube_vertices[3].x);
+
+
+	m[4] = (new_cube_vertices[2].z - new_cube_vertices[1].z) / (new_cube_vertices[2].x - new_cube_vertices[1].x);
+	b[4] = (-1.0f * m[1] * new_cube_vertices[1].x + new_cube_vertices[1].z);
+
+	m[5] = (new_cube_vertices[0].z - new_cube_vertices[3].z) / (new_cube_vertices[0].x - new_cube_vertices[3].x);
+	b[5] = (-1.0f * m[3] * new_cube_vertices[3].x + new_cube_vertices[3].z);
 
 
 	bool isOkay = true;
 	int object_id = object_count + 1;
+	//printf("  Add Object %d now (%3.3f, %3.3f), (%3.3f, %3.3f), (%3.3f, %3.3f), (%3.3f, %3.3f)\n", object_id,
+	//	new_cube_vertices[0].x, new_cube_vertices[0].z,
+	//	new_cube_vertices[1].x, new_cube_vertices[1].z,
+	//	new_cube_vertices[2].x, new_cube_vertices[2].z,
+	//	new_cube_vertices[3].x, new_cube_vertices[3].z);
+	//printf("    Line 1 z <= %3.3f x + %3.3f\n", m[0], b[0]);
+	//printf("    Line 2 x >= %3.3f z + %3.3f\n", m[1], b[1]);
+	//printf("    Line 3 z >= %3.3f x + %3.3f\n", m[2], b[2]);
+	//printf("    Line 4 x <= %3.3f z + %3.3f\n", m[3], b[3]);
 	for (int z = 0; z < world_intervals && isOkay; z++) {
 		for (int x = 0; x < world_intervals && isOkay; x++) {
 
-			glm::vec3 p[4];
+			glm::vec3 p[17];
 			p[0] = getPosition(x, z);			//left top
 			p[1] = getPosition(x, z + 1);		//left bottom
 			p[2] = getPosition(x + 1, z);		//right top
 			p[3] = getPosition(x + 1, z + 1);	//right bottom
 
+			p[4] = (p[0] + p[1]) / 2.0f;
+			p[5] = (p[1] + p[2]) / 2.0f;
+			p[6] = (p[2] + p[3]) / 2.0f;
+			p[7] = (p[3] + p[0]) / 2.0f;
+
+			p[8] = (p[0] + p[1] + p[2] + p[3]) / 4.0f;
+
+			p[9] = (p[0] + p[4]) / 2.0f;
+			p[10] = (p[1] + p[4]) / 2.0f;
+			p[11] = (p[1] + p[5]) / 2.0f;
+			p[12] = (p[2] + p[5]) / 2.0f;
+			p[13] = (p[2] + p[6]) / 2.0f;
+			p[14] = (p[3] + p[6]) / 2.0f;
+			p[15] = (p[3] + p[7]) / 2.0f;
+			p[16] = (p[0] + p[7]) / 2.0f;
+
+			//printf("      Object %d: test point (%3.3f,%3.3f)\n", object_id, p[0].x, p[0].z);
 			bool isOccured = false;
-			for (int i = 0; i < 4; i++) {
-				float xpos = p[i].x;
-				float zpos = p[i].z;
+			for (int i = 0; i < 6; i++) {
+				float x1 = p[i % 4].x;
+				float z1 = p[i % 4].z;
+				float x2 = p[((i % 4) + (i / 4) + 1) % 4].x;
+				float z2 = p[((i % 4) + (i / 4) + 1) % 4].z;
+				for (int j = 0; j <= 10; j++) {
+					float xpos = x1 + (x2 - x1) * j / 10.0f;
+					float zpos = z1 + (z2 - z1) * j / 10.0f;
 
-				
-				if (zpos <= (m[0] * xpos + b[0]) && //test for line 1, cube_p0 and cube_p1
-					zpos <= (m[1] * xpos + b[1]) && //test for line 2, cube_p1 and cube_p2
-					zpos >= (m[3] * xpos + b[2]) && //test for line 3, cube_p2 and cube_p3
-					zpos >= (m[2] * xpos + b[3]))   //test for line 4, cube_p3 and cube_p0
-				{
-					isOccured = true;
-					break;
+					if (zpos <= (m[0] * xpos + b[0]) && //test for line 1, cube_p0 and cube_p1
+						xpos >= (m[1] * zpos + b[1]) && //test for line 2, cube_p1 and cube_p2
+						zpos >= (m[2] * xpos + b[2]) && //test for line 3, cube_p2 and cube_p3
+						xpos <= (m[3] * zpos + b[3]))   //test for line 4, cube_p3 and cube_p0
+					{
+						isOccured = true;
+						break;
+					}
 				}
-
 			}
 
 			if (isOccured) { //object occurs grid (x,z)
 				if (occupation[z][x] != -1) { //grid (x,z) is occured by other object before
 					isOkay = false;
-					printf("Object %d: cannnot occured position (%d,%d) because object %d occured already \n", object_id, x, z, occupation[z][x]);
+					//printf("    Object %d: cannnot occured position (%d,%d) because object %d occured already \n", object_id, x, z, occupation[z][x]);
 				}
 				else {
 					occupation[z][x] = object_id;
-					//printf("Object %d: occured position (%d,%d)\n", object_id, x, z);
+					//printf("    Object %d: occured position (%d,%d)\n", object_id, x, z);
 				}
+			}
+			else {
+				//printf("    Object %d: did not occured position (%d,%d)\n", object_id, x, z);
+
 			}
 		}
 
 	}
 
 	if (!isOkay) { //failure to add object, need to undo the mark for this object
-		for (int z = 0; z < world_intervals && isOkay; z++) {
-			for (int x = 0; x < world_intervals && isOkay; x++) {
+		for (int z = 0; z < world_intervals; z++) {
+			for (int x = 0; x < world_intervals; x++) {
 				if (occupation[z][x] == object_id) {
 					occupation[z][x] = -1; 
 				}
@@ -173,6 +265,24 @@ bool City::addObject(glm::mat4 drawMatrix) {
 	}
 	else { //successful to add object, good to go
 		object_count++;
+		//printf("  add object %d successfully\n", object_id);
+		//for (int z = 0; z < world_intervals; z++) {
+		//	for (int x = 0; x < world_intervals; x++) {
+		//		printf("%3d ", occupation[z][x]);
+		//	}
+		//	printf("\n");
+		//}
+
+		//printf("  Add Object %d now (%3.4f, %3.4f), (%3.4f,%3.4f), (%3.4f, %3.4f), (%3.4f, %3.4f)\n", object_id,
+		//	new_cube_vertices[0].x, new_cube_vertices[0].z,
+		//	new_cube_vertices[1].x, new_cube_vertices[1].z,
+		//	new_cube_vertices[2].x, new_cube_vertices[2].z,
+		//	new_cube_vertices[3].x, new_cube_vertices[3].z);
+		//printf("    Line 1 z <= %3.4f x + %3.4f\n", m[0], b[0]);
+		//printf("    Line 2 x >= %3.4f z + %3.4f\n", m[1], b[1]);
+		//printf("    Line 3 z >= %3.4f x + %3.4f\n", m[2], b[2]);
+		//printf("    Line 4 x <= %3.4f z + %3.4f\n", m[3], b[3]);
+
 	}
 
 	return isOkay;
@@ -186,26 +296,31 @@ void City::draw(glm::mat4 cMatrix) {
 	glUniformMatrix4fv(glGetUniformLocation(cityShader->Program, "modelview"), 1, GL_FALSE, glm::value_ptr(modelview));
 	glUniformMatrix4fv(glGetUniformLocation(cityShader->Program, "projection"), 1, GL_FALSE, glm::value_ptr(Window::P));
 	glBindVertexArray(VAO);
+
+	if (Window::debug) {
+		glUniform1i(glGetUniformLocation(cityShader->Program, "isTexture"), 0);
+		glLineWidth(3.0f);
+		//glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		glPointSize(7.0f);
+		glDrawArrays(GL_POINTS, 0, vertices.size());
+
+		glDrawArrays(GL_LINES, 0, vertices.size());
+	}
+
+	glUniform1i(glGetUniformLocation(cityShader->Program, "isTexture"), 1);
 	glActiveTexture(GL_TEXTURE0);
 	glUniform1i(glGetUniformLocation(cityShader->Program, "tile"), 0);
 	glBindTexture(GL_TEXTURE_2D, texture);
-
-	//glLineWidth(3.0f);
-	//glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
-	//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	//glPointSize(10.0f);
-	//glDrawArrays(GL_POINTS, 0, vertices.size());
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-	//glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
 
 	glBindVertexArray(0);
 
 	Group::draw(cMatrix * toWorld);
 
-	if (Window::debug) {
-		drawCurves(cMatrix);
-	}
+	//if (Window::debug) {
+	//	drawCurves(cMatrix);
+	//}
 }
 
 //void City::draw(Shader shader)
