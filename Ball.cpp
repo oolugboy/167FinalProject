@@ -9,7 +9,7 @@ Ball::Ball(bool isPlayer, glm::vec3 position)
 	this->prevPos = this->currPos = this->initPos = position;
 	this->isPlayer = isPlayer;		
 	this->direction = glm::vec3(0.0f, 0.0f, 0.0f);
-	maxSpeed = 20.0f;
+	maxSpeed = 10.0f;
 	movable = true;
 
 	/* The velocity values */
@@ -38,21 +38,6 @@ void Ball::draw(glm::mat4 cMatrix)
 	toWorld = cMatrix;
 	sphere->draw(cMatrix);
 }
-void Ball::update()
-{
-	clock_t temp = clock();
-	cout << " The temp is " << temp - t << endl;
-	currPos = initPos + glm::vec3(toWorld[3]);
-	
-	if (temp - t > 0.0002) {
-		checkMaxSpeed();		
-		if (!getCollided) 
-		{
-			updateVelocity((float)temp - t);
-		}
-		t = temp;
-	}
-}
 
 void Ball::jump(bool accel)
 {
@@ -72,12 +57,12 @@ void Ball::jump(bool accel)
 
 void Ball::accelerate(bool posAccel)
 {
-	glm::vec3 frictionalForce = (0.00029f * (-1.0f * direction));
+	glm::vec3 frictionalForce = (0.0029f * (-1.0f * direction));
 	glm::vec3 gravitationalForce = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	if (posAccel) 
 	{
-		forwardForce = (-0.000300f * ballZ);
+		forwardForce = (-0.00300f * ballZ);
 	}
 	else
 	{
@@ -106,6 +91,22 @@ void Ball::accelerate(bool posAccel)
 	printVector(acceleration);
 
 }
+void Ball::update()
+{
+	clock_t temp = clock();
+	cout << " The temp is " << temp - t << endl;
+	currPos = glm::vec3(toWorld[3]);
+
+	if (temp - t > 0.0002) {
+		checkMaxSpeed();
+		if (!getCollided)
+		{
+			updateVelocity((float)temp - t);
+		}
+		t = temp;
+	}
+}
+
 /* This function updates the initial and the final velocity */
 void Ball::updateVelocity(float sec)
 {
@@ -126,7 +127,7 @@ void Ball::updateVelocity(float sec)
 		//cout << " The other player's former final velocity is ";
 		//printVector(finalVelocity);		
 	}
-
+	/* Update hte ac*/
 	/*Update the velociy */
 	initVelocity = finalVelocity;
 
@@ -150,14 +151,15 @@ void Ball::updateVelocity(float sec)
 		turnForce = (0.0300f * ballX) / mass;
 		turnVelocity = (sec* turnForce / mass);
 	}
+	if (turn != 1)
+	{
+		/* Update the appropriate values in case of a turn */
+		finalVelocity = finalVelocity + turnVelocity;
+		//acceleration = (finalVelocity - initVelocity) / sec;
+	}
 	turn = 1; //reset to no turn
 
-	/* Update the appropriate values in case of a turn */
-	finalVelocity = finalVelocity + turnVelocity;	
-	acceleration = (finalVelocity - initVelocity) / sec;
 
-
-	
 	if (isPlayer)
 	{
 		//cout << " The speed is " << getMag(finalVelocity) << endl;
@@ -188,7 +190,7 @@ void Ball::checkMaxSpeed()
 {
 	if (getMag(finalVelocity) > maxSpeed)
 	{
-		finalVelocity = glm::normalize(finalVelocity) * 3.0f;
+		finalVelocity = glm::normalize(finalVelocity) * maxSpeed;
 	}
 }
 float Ball::getMag(glm::vec3 dir)
@@ -223,14 +225,22 @@ void Ball::handleCollision(Object * otherObject)
 	else
 		cout << " The other handling collision " << endl;	
 	
-	finalVelocity = ((initVelocity  * (this->mass - otherObject->mass)) + (2.0f * otherObject->mass * otherObject->initVelocity)) / (this->mass + otherObject->mass) * 1.0f;	
+	if (isPlayer)
+	{
+		cout << " The players initial pre collision velocity is ";
+		printVector(initVelocity);
+	}
+	finalVelocity = (((initVelocity  * (this->mass - otherObject->mass)) + (2.0f * otherObject->mass * otherObject->initVelocity)) / (this->mass + otherObject->mass)) * 10.0f;	
+	/* To exaggerate the bounce */
+	//finalVelocity = finalVelocity * (100.0f)
 	
+	/* Update in the case of collision */
+	acceleration = (finalVelocity - initVelocity) * 30.0f;
 	/** Update the acceleration */
 	if (isPlayer == false)
 	{
 		cout << " The aI post collision final velocity is ";
 		printVector(finalVelocity);
-		
 	}
 	else
 	{
@@ -238,13 +248,7 @@ void Ball::handleCollision(Object * otherObject)
 		printVector(finalVelocity);
 		cout << " While the aI post collision final velocity is ";
 		printVector(otherObject->finalVelocity);
-
 	}
-	/* Update the acceleration of the other object too */
-	
-	//finalVelocity->acceleration = (other)
-	/* Update in the case of collision */
-	//acceleration = (finalVelocity - initVelocity);
 
 }
 glm::vec3 Ball::cross(glm::vec3 a, glm::vec3 b)
