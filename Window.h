@@ -22,6 +22,7 @@ class Window
 public:
 	static int width;
 	static int height;
+	static bool debug;
 	static glm::mat4 P; // P for projection
 	static glm::mat4 V; // V for view
 	static void initialize_objects();

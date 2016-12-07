@@ -14,62 +14,81 @@ MatrixTransform * buildingTrans;
 
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 {
-	/* Initialize the required variables */
+
+
 	t = clock();
 	m_shaderProgram1 = shaderProgram1;
 	m_shaderProgram2 = shaderProgram2;
 	skyBox = new SkyBox();
-	worldGroup = new Group();		
-	boundBoxATrans = new MatrixTransform();
-	boundBoxBTrans = new MatrixTransform();
-	playerBallTrans = new MatrixTransform();
-	ballBTrans = new MatrixTransform();	
+	worldGroup = new Group();
 
 	/* The general relevant geometries */
 	genSphere = new Sphere(1.0f, false);
 	genCube = new Cube(true);
 
-	player = new Ball(true, glm::vec3(0.0f,1,0.0f), playerBallTrans);		
-	Window::camera = new Camera(player);
 
-	aI = new Ball(false, glm::vec3(0.0f, 1.0f, -25.0f), ballBTrans);
+	randomInitial(1); 
 
-	city = new City(100);
+	aI->mass = 10000.0f;
 
-	/*~~ SHAPE GRAMMAR TESTING*/
+}
+
+void Scene::randomInitial(int seed) {
+	/* Initialize the required variables */
+	worldMatTrans = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
+
+	//worldGroup->children.clear();
+
+	int world_grids = 100;
+	city = new City(world_grids);
 	BuildingGrammar * buildingGram = new BuildingGrammar();
-	buildingTrans = buildingGram->Build(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 45.0f);
-	worldGroup->addChild(buildingTrans);
-	buildingTrans = buildingGram->Build(glm::vec3(-2.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 20.0f);
-	worldGroup->addChild(buildingTrans);
-	buildingTrans = buildingGram->Build(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 80.0f);
-	worldGroup->addChild(buildingTrans);
-	buildingTrans = buildingGram->Build(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 30.0f);
-	worldGroup->addChild(buildingTrans);
-	buildingTrans = buildingGram->Build(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f);
-	worldGroup->addChild(buildingTrans);
-	buildingTrans = buildingGram->Build(glm::vec3(2.0f, 0.0f, 5.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f);
-	worldGroup->addChild(buildingTrans);
-	buildingTrans = buildingGram->Build(glm::vec3(-2.0f, 0.0f, 5.0f), glm::vec3(0.5f, 0.5f, 0.5f), 68.0f);
-	worldGroup->addChild(buildingTrans);
-	/*~~ END */
 
-	buildGraph();
-	/* Initialize the sizes */
+	if (seed >= 0) { srand(0); }
+	else { srand(time(NULL)); }
+
 	initializeObjects();
 
-	//aI->mass = 10000.0f;
-	
+	for (int i = 0; i < world_grids; i++) {
+		float xpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
+		float zpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
+		float size = ((rand() % 1000) / 1000.0f) * (0.2f * world_grids / 2 - 1.0f) + 1.0f;
+		float rotAngle = (rand() % 1000) / 1000.0f * 90.0f;
+		//printf("Add random building %d: (%f,%f), %f, %f\n", i, xpos, zpos, size, rotAngle);
+
+		glm::mat4 translate = glm::translate(glm::mat4(1.0f), glm::vec3(xpos, 0.0f, zpos));
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(size));
+		glm::mat4 rot = glm::rotate(glm::mat4(1.0f), rotAngle / 180.0f * glm::pi<float>(), glm::vec3(0.0f, 1.0f, 0.0f));
+		//glm::mat4 rot = glm::mat4(1.0f);
+
+		glm::mat4 cMatrix = translate * scale * rot;
+
+		if (city->addObject(cMatrix)) {
+			//TODO: buildings are too height, cannot see anything for debug, might need a max hieght, and make the height depend on scale?
+			//buildingTrans = buildingGram->Build(glm::vec3(xpos, 0.0f, zpos), glm::vec3(size), rotAngle);
+			//worldGroup->addChild(buildingTrans);
+			MatrixTransform* cube1 = new MatrixTransform();
+			glm::mat4 cube1_matrix = cube1->transformMatrix * translate * scale * rot;
+			cube1->transformMatrix = cube1_matrix;
+			cube1->addChild(genCube);
+			worldGroup->addChild(cube1);
+		}
+	}
+
+	worldGroup->addChild(city);
 }
 void Scene::draw()
 {
 	// Use the first shader program to draw the skybox
 	glUseProgram(m_shaderProgram1);
 	/* We first draw the skybox */
-	skyBox->draw(m_shaderProgram1);	
+	skyBox->draw(m_shaderProgram1);
 	/** Now to use */
 	glUseProgram(m_shaderProgram2);
-	worldGroup->draw(glm::mat4(1.0f));	
+
+	//Since skybox is fix size, so scale down the world to make the world looks bigger
+	//worldGroup->draw(worldMatTrans);
+	worldGroup->draw(glm::mat4(1.0f));
+
 
 	/* Test the collision detection */
 	if (isCollide())
@@ -77,12 +96,11 @@ void Scene::draw()
 
 	//cout << " It took this " << t << " clicks to render the robots in this frame " << endl;
 	worldGroup->update();
-	city->drawCurves();
 
 }
 void Scene::changePlayerDirection(float direction, bool posAccel)
 {
-	player->turn = direction;		
+	player->turn = direction;
 }
 
 void Scene::mouseOrbit(glm::vec3 & lastPosition, glm::vec3 & currPosition, glm::vec3 & cam_pos, int width, int height)
@@ -122,49 +140,35 @@ void Scene::acceleratePlayer(bool posAccel)
 	player->accelerate(posAccel);
 	aI->accelerate(false);
 }
-/* Move the moveBalls to the updateVelocity */
-void Scene::moveBalls()
-{	 
-	/* The amount of time before the previous call*/
-	float time = (float)(clock() - t) / CLOCKS_PER_SEC;
-	t = clock();
-	
-	/* The new distance that the ball should move in this frame */
-	//S = ut + 1/2(a(t)^2)	
-	/*cout << " The acceleration is ";
-	player->printVector(player->acceleration);*/
-	glm::vec3 diff = glm::vec3(0.0f, 0.0f, 0.0f);
-	diff = (player->initVelocity * time) + (0.50f * player->acceleration * pow(time, 2));
-	cout << " The diff is ";
-	player->printVector(diff);	
-	playerBallTrans->transformMatrix = glm::translate(glm::mat4(1.0f), diff) * playerBallTrans->transformMatrix;
-	
-	/* For the aI part */
-	diff = (aI->initVelocity * time) + (0.50f * aI->acceleration * pow(time, 2));
-	cout << " The aI acceleration is ";
-	player->printVector(aI->acceleration);
-	ballBTrans->transformMatrix = glm::translate(glm::mat4(1.0f), diff) * ballBTrans->transformMatrix;
-}
-void Scene::buildGraph()
+void Scene::initializeObjects()
 {
-	/* Now to build the tree */	
-	worldGroup->addChild(player);	
+	boundBoxATrans = new MatrixTransform();
+	boundBoxBTrans = new MatrixTransform();
+	playerBallTrans = new MatrixTransform();
+	ballBTrans = new MatrixTransform();
+
+	player = new Ball(true, glm::vec3(0.0f, 1, 0.0f), playerBallTrans);
+	Window::camera = new Camera(player);
+
+	aI = new Ball(false, glm::vec3(0.0f, 1.0f, -25.0f), ballBTrans);
+
+	/* Set the initial position for the object */
+
+	city->addObject(ballBTrans->transformMatrix);
+	city->addObject(playerBallTrans->transformMatrix);
+
+	/* add all the objects to the vector */
+	collidableObjects.push_back(player);
+	collidableObjects.push_back(aI);
+
+	worldGroup->addChild(player);
 	worldGroup->addChild(aI);
-	worldGroup->addChild(city);
 
 	playerBallTrans->addChild(genCube);
 	playerBallTrans->addChild(genSphere);
 
 	ballBTrans->addChild(genCube);
 	ballBTrans->addChild(genSphere);
-}
-void Scene::initializeObjects()
-{
-	/* Set the initial position for the object */
-
-	/* add all the objects to the vector */
-	collidableObjects.push_back(player);
-	collidableObjects.push_back(aI);
 }
 bool Scene::isCollide()
 {
@@ -181,7 +185,7 @@ bool Scene::isCollide()
 					collidableObjects[i]->handleCollision(collidableObjects[j]);
 
 				}
-				
+
 				if (collidableObjects[j]->movable) {
 					collidableObjects[j]->handleCollision(collidableObjects[i]);
 
@@ -197,7 +201,8 @@ void Scene::zoom(float scrollOffset, glm::vec3 & cam_pos)
 	float fact = 0.0f;
 	if (scrollOffset > 0)
 		fact = 1.5f;
-	if (scrollOffset < 0)
+	}
+	if (scrollOffset < 0) {
 		fact = 0.75f;
 }
 void Scene::jumpPlayer(bool accel)
@@ -207,5 +212,5 @@ void Scene::jumpPlayer(bool accel)
 Scene::~Scene()
 {
 	delete(skyBox);
-	delete(worldGroup);	
+	delete(worldGroup);
 }

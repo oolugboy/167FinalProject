@@ -25,7 +25,7 @@ bool turnLeft = false;
 
 Camera * Window::camera;
 // Default camera parameters
-glm::vec3 Window::cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
+glm::vec3 Window::cam_pos(0.0f, 5.0f, 15.0f);		// e  | Position of camera
 glm::vec3 Window::cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
 glm::vec3 Window::cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
@@ -37,6 +37,7 @@ glm::vec3 Window::cam_up(0.0f, 0.0f, 1.0f);			// up | What orientation "up" is *
 
 int Window::width;
 int Window::height;
+bool Window::debug = true;
 
 glm::mat4 Window::P;
 glm::mat4 Window::V;
@@ -139,7 +140,7 @@ void Window::display_callback(GLFWwindow* window)
 	}
 	else if(camera_mode == 1){
 		/* For the birds eye view */
-		glm::vec3 pos(0.0f, 100.0f, 0.0f);		// e  | Position of camera
+		glm::vec3 pos(0.0f, 50.0f, 0.0f);		// e  | Position of camera
 		glm::vec3 look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
 		glm::vec3 up(0.0f, 0.0f, 1.0f);			// up | What orientation "up" is 
 
@@ -154,22 +155,22 @@ void Window::display_callback(GLFWwindow* window)
 	/* Turn the player according to user controls */
 	if (turnLeft)
 	{
-		cout << " Turning left " << endl;
+		//cout << " Turning left " << endl;
 		scene->changePlayerDirection(0, accelerate);
 	}
 	if (turnRight)
 	{
-		cout << " Turning right " << endl;
+		//cout << " Turning right " << endl;
 		scene->changePlayerDirection(2, accelerate);
 	}
 	if (accelerate)//Speed up
 	{
-		cout << "Speeding up " << endl;
+		//cout << "Speeding up " << endl;
 		scene->acceleratePlayer(true);
 	}
 	else // Slow down
 	{
-		cout << " Slowing down " << endl;
+		//cout << " Slowing down " << endl;
 		scene->acceleratePlayer(false);
 	}
 	/** The mouse controls */
@@ -198,7 +199,7 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 	}
 	if (action == GLFW_PRESS && key == GLFW_KEY_J)
 	{
-		scene->jumpPlayer(accelerate);
+		//scene->jumpPlayer(accelerate);
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 	{
@@ -226,6 +227,9 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 	}
 	if (action == GLFW_PRESS && key == GLFW_KEY_C) {
 		camera_mode = (camera_mode + 1) % 2;
+	}
+	if (action == GLFW_PRESS && key == GLFW_KEY_D) {
+		Window::debug = !Window::debug;
 	}
 }
 void Window::mouse_button_callback(GLFWwindow * window, int button, int action, int mods)
