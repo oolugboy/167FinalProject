@@ -15,6 +15,8 @@
 #include "shader.h"
 #include <cmath>
 
+class Camera;
+
 class Window
 {
 public:
@@ -36,5 +38,6 @@ public:
 	static glm::vec3 cam_pos;		// e  | Position of camera
 	static glm::vec3 cam_look_at;	// d  | This is where the camera looks at
 	static glm::vec3 cam_up;			// up | What orientation "up" is	
+	static Camera * camera;
 };
 #endif

@@ -16,7 +16,6 @@
 #include <vector>
 #include <cmath>
 #include <limits>
-#include "Sphere.h"
 #include <time.h>
 #include "Object.h"
 #include "MatrixTransform.h"

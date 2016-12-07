@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="..\Ball.cpp" />
     <ClCompile Include="..\BuildingGrammar.cpp" />
+    <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\City.cpp" />
     <ClCompile Include="..\Cube.cpp" />
     <ClCompile Include="..\Curve.cpp" />
@@ -152,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="..\Ball.h" />
     <ClInclude Include="..\BuildingGrammar.h" />
+    <ClInclude Include="..\Camera.h" />
     <ClInclude Include="..\City.h" />
     <ClInclude Include="..\Cube.h" />
     <ClInclude Include="..\Curve.h" />

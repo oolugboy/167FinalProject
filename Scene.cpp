@@ -30,6 +30,7 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	genCube = new Cube(true);
 
 	player = new Ball(true, glm::vec3(0.0f,1,0.0f), playerBallTrans);		
+	Window::camera = new Camera(player);
 
 	aI = new Ball(false, glm::vec3(0.0f, 1.0f, -25.0f), ballBTrans);
 

@@ -1,4 +1,4 @@
-#include "window.h"
+#include "Window.h"
 #include "Scene.h"
 
 
@@ -23,6 +23,7 @@ bool turnLeft = false;
 #define VERTEX_SHADER2_PATH "../shader2.vert"
 #define FRAGMENT_SHADER2_PATH "../shader2.frag"
 
+Camera * Window::camera;
 // Default camera parameters
 glm::vec3 Window::cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
 glm::vec3 Window::cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at

@@ -17,7 +17,6 @@
 #include <cmath>
 #include <limits>
 #include <string>
-#include "Node.h"
 #include "MatrixTransform.h"
 
 using namespace std;

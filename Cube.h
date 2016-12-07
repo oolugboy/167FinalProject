@@ -16,7 +16,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Geode.h"
 
-
 class Cube : public Geode
 {
 public:
