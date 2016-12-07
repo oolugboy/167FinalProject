@@ -3,13 +3,14 @@
 
 using namespace std;
 
-clock_t Ball::t;
+
 Ball::Ball(bool isPlayer, glm::vec3 position)
 {	
 	this->prevPos = this->currPos = this->initPos = position;
 	this->isPlayer = isPlayer;		
 	this->direction = glm::vec3(0.0f, 0.0f, 0.0f);
-	maxSpeed = 3.0f;
+	maxSpeed = 10.0f;
+	movable = true;
 
 	/* The velocity values */
 	initVelocity = finalVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -26,57 +27,18 @@ Ball::Ball(bool isPlayer, glm::vec3 position)
 	this->ballZ = glm::vec3(0.0f, 0.0f, 1.0f);	
 
 	/* Set arbitatry value for the mass and acceleration */
-	mass = 2.0;
+	mass = 2.0f;
 	acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
+	t = 0.0f;
 	inAir = false;
+	turn = 1;
 }
 void Ball::draw(glm::mat4 cMatrix)
 {
 	toWorld = cMatrix;
 	sphere->draw(cMatrix);
 }
-void Ball::update()
-{
-	clock_t temp = clock();
-	currPos = initPos + glm::vec3(toWorld[3]);
 
-	if (isPlayer)
-	{
-		/*cout << " The translations ";
-		printVector(glm::vec3(toWorld[3]));
-		cout << " The currPos set ";
-		printVector(currPos);
-		cout << " The prevPos set ";
-		printVector(prevPos);
-		cout << " The initial Pos set ";
-		printVector(initPos);*/
-	}
-	//forwardForce = (-0.0008f * ballZ);
-	checkMaxSpeed();
-	updateVelocity((float)temp - t);
-	t = temp;
-}
-//void Ball::turn(bool left, bool right, bool posAccel)
-//{	
-//	glm::vec3 turnForce = (0.002f * ballX);
-//	if (left)
-//	{
-//		turnForce = (-1.0f * turnForce);
-//	}
-//	if (posAccel == false)
-//	{		
-//		forwardForce = glm::vec3(0.0f, 0.0f, 0.0f);	
-//		if (getMag(initVelocity) < 5.0f)
-//		{
-//			cout << " STOP !!" << endl;
-//			acceleration = initVelocity = finalVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
-//			return;
-//		}
-//	}	
-//	glm::vec3 resForce = ((mass * acceleration) + (turnForce + forwardForce) * 0.7f);	
-//	glm::vec3 frictionalForce = (0.0004f * (-1.0f * direction));
-//	acceleration = (resForce + frictionalForce) / mass;
-//}
 void Ball::jump(bool accel)
 {
 	cout << " We are jumping " << endl;
@@ -92,59 +54,59 @@ void Ball::jump(bool accel)
 
 	acceleration = ((mass * acceleration) + forwardForce + upwardForce) / mass;
 }
+
 void Ball::accelerate(bool posAccel)
-{	
-	glm::vec3 frictionalForce = (0.00029f * (-1.0f * direction));
+{
+	glm::vec3 frictionalForce = (0.0029f * (-1.0f * direction));
 	glm::vec3 gravitationalForce = glm::vec3(0.0f, 0.0f, 0.0f);
 
-
-
-	//if(posAccel == false)
-	//{
-	//	forwardForce = glm::vec3(0.0f, 0.0f, 0.0f);
-	//	if (getMag(initVelocity) < 5.0f)
-	//	{
-	//		cout << " STOP !!" << endl;
-	//		acceleration = initVelocity = finalVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	//		return;
-	//	}
-	//}
-
-	if (posAccel) {
-		forwardForce = (-0.000300f * ballZ);
+	if (posAccel) 
+	{
+		forwardForce = (-0.00300f * ballZ);
 	}
-	else {
+	else
+	{
 		forwardForce = glm::vec3(0.0f);
 	}
+
 	/* If the ball is in the air */
 	if (inAir)
 	{
 		gravitationalForce = (-0.0029f * glm::vec3(0.0f, 1.0f, 0.0f));
-		frictionalForce = forwardForce =  glm::vec3(0.0f, 0.0f, 0.0f);
+		frictionalForce = forwardForce = glm::vec3(0.0f, 0.0f, 0.0f);
 		if (currPos.y < 0.01f)/* Offset from the ground */
 		{
 			/* Glide the ball back to the ground*/
 			//forwardForce = 
 		}
-	}	
-		
-	//if (getMag(initVelocity) < 5.0f)
-	//{
-	//	cout << " STOP !!" << endl;
-	//	acceleration = initVelocity = finalVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	//}
-	//else {
-	
-		/** Update the direction of the acceleration */
-		float a_mag = getMag(acceleration);
-		acceleration = a_mag * direction;
+	}
 
-		acceleration = ((mass * acceleration) + forwardForce + frictionalForce + gravitationalForce) / mass;
-		acceleration = (turn != 1) ? acceleration * 0.5f : acceleration * 1.0005f;
-		cout << " The acceleration is ";
-		printVector(acceleration);
-	//}
+	/** Update the direction of the acceleration */
+	float a_mag = getMag(acceleration);
+	acceleration = a_mag * direction;
+
+	acceleration = ((mass * acceleration) + forwardForce + frictionalForce + gravitationalForce) / mass;
+	acceleration = (turn != 1) ? acceleration * 0.5f : acceleration * 1.0005f;
+	cout << " The acceleration is ";
+	printVector(acceleration);
+
 }
+void Ball::update()
+{
+	clock_t temp = clock();
+	cout << " The temp is " << temp - t << endl;
+	currPos = glm::vec3(toWorld[3]);
+
+	if (temp - t > 0.0002) {
+		checkMaxSpeed();
+		if (!getCollided)
+		{
+			updateVelocity((float)temp - t);
+		}
+		t = temp;
+	}
+}
+
 /* This function updates the initial and the final velocity */
 void Ball::updateVelocity(float sec)
 {
@@ -156,16 +118,21 @@ void Ball::updateVelocity(float sec)
 		cout << " The direction is ";
 		printVector(direction);
 		ballZ = (-1.0f * direction);
-		ballX = glm::normalize(cross(ballY, ballZ));
-		/*cout << " The moving ballX ";
-		printVector(ballX);*/
+		ballX = glm::normalize(cross(ballY, ballZ));		
 		cout << " The acceleration is ";
 		printVector(acceleration);
 	}
-
+	if (!(isPlayer))
+	{
+		//cout << " The other player's former final velocity is ";
+		//printVector(finalVelocity);		
+	}
+	/* Update hte ac*/
 	/*Update the velociy */
 	initVelocity = finalVelocity;
 
+
+	/* The stopping condition */
 	if (getMag(initVelocity) < 1.0 && getMag(acceleration) < 0.0001) {
 		initVelocity = finalVelocity = acceleration = glm::vec3(0.0f);
 	}
@@ -173,6 +140,7 @@ void Ball::updateVelocity(float sec)
 		finalVelocity = initVelocity + (acceleration * sec);
 	}
 
+	/* For the turning */
 	glm::vec3 turnForce = glm::vec3(0.0f);
 	glm::vec3 turnVelocity = glm::vec3(0.0f);
 	if (turn == 0) { // turn left
@@ -183,17 +151,27 @@ void Ball::updateVelocity(float sec)
 		turnForce = (0.0300f * ballX) / mass;
 		turnVelocity = (sec* turnForce / mass);
 	}
+	if (turn != 1)
+	{
+		/* Update the appropriate values in case of a turn */
+		finalVelocity = finalVelocity + turnVelocity;
+		//acceleration = (finalVelocity - initVelocity) / sec;
+	}
 	turn = 1; //reset to no turn
 
 
-	finalVelocity = finalVelocity + turnVelocity;
-	
 	if (isPlayer)
 	{
-		cout << " The speed is " << getMag(finalVelocity) << endl;
-		/*cout << " The direction is ";
-		printVector(direction);*/
+		//cout << " The speed is " << getMag(finalVelocity) << endl;
+		cout << " The finalVelocity  is ";
+		printVector(finalVelocity);
 	}
+	else
+	{		
+		cout << " The other player's updated acceleration is ";
+		printVector(acceleration);
+	}
+
 	prevPos = currPos;
 	updateBoxVals();
 }
@@ -212,7 +190,7 @@ void Ball::checkMaxSpeed()
 {
 	if (getMag(finalVelocity) > maxSpeed)
 	{
-		finalVelocity = glm::normalize(finalVelocity) * 3.0f;
+		finalVelocity = glm::normalize(finalVelocity) * maxSpeed;
 	}
 }
 float Ball::getMag(glm::vec3 dir)
@@ -245,14 +223,33 @@ void Ball::handleCollision(Object * otherObject)
 	if (isPlayer)
 		cout << " The player handling collision " << endl;
 	else
-		cout << " The other handling collision " << endl;
-	glm::vec3 actionForce = (acceleration * mass);
-	glm::vec3 reactionForce = -1.0f * actionForce;
-	// Incident force from the other object 
-	glm::vec3 incidentForce = (otherObject->acceleration * otherObject->mass);
-	acceleration = (actionForce + reactionForce + incidentForce) / mass;
-	//For quick response
-	acceleration = acceleration * (20.0f);
+		cout << " The other handling collision " << endl;	
+	
+	if (isPlayer)
+	{
+		cout << " The players initial pre collision velocity is ";
+		printVector(initVelocity);
+	}
+	finalVelocity = (((initVelocity  * (this->mass - otherObject->mass)) + (2.0f * otherObject->mass * otherObject->initVelocity)) / (this->mass + otherObject->mass)) * 10.0f;	
+	/* To exaggerate the bounce */
+	//finalVelocity = finalVelocity * (100.0f)
+	
+	/* Update in the case of collision */
+	acceleration = (finalVelocity - initVelocity) * 30.0f;
+	/** Update the acceleration */
+	if (isPlayer == false)
+	{
+		cout << " The aI post collision final velocity is ";
+		printVector(finalVelocity);
+	}
+	else
+	{
+		cout << " The player post collision final velocity is ";
+		printVector(finalVelocity);
+		cout << " While the aI post collision final velocity is ";
+		printVector(otherObject->finalVelocity);
+	}
+
 }
 glm::vec3 Ball::cross(glm::vec3 a, glm::vec3 b)
 {

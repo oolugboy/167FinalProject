@@ -22,9 +22,12 @@ public:
 
 	bool addObject(glm::mat4 drawMatrix);
 
-	void draw(glm::mat4 cMatrix);
+	void draw(glm::mat4 cMatrix);	
 	void drawCurves(Shader shader);
 	void drawCurves();
+	void drawCurves(glm::mat4 cMatrix);
+
+
 
 	void computePoints();
 	void generateCurves();
@@ -51,13 +54,22 @@ public:
 	Shader* curveShader; //may not need it
 
 						 //used to check new add object to city is okay or not
-	std::vector<std::vector<bool>> occupation;
+	std::vector<std::vector<int>> occupation;
+	int object_count = 0;
 
 
 	//used to generate curves, then generate vertices
 	std::vector<Curve*> curves_v;
 	std::vector<Curve*> curves_h;
 	int world_intervals;
+
+	const glm::vec3 cube_vertices[4] = {
+		// bottom face
+		glm::vec3(-1.0f, -1.0f,  1.0f),  //right top
+		glm::vec3(1.0f, -1.0f,  1.0f),   //left top
+		glm::vec3(1.0f, -1.0f, -1.0f),   //left bottom
+		glm::vec3(-1.0f, -1.0f, -1.0f)   //right bottom
+	};
 };
 
 #endif

@@ -177,6 +177,7 @@
     <None Include="..\shader.vert" />
     <None Include="..\shader2.frag" />
     <None Include="..\shader2.vert" />
+    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

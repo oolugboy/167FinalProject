@@ -30,6 +30,7 @@ public:
 	glm::mat4 toWorld;
 
 	void draw(Shader shader);
+	void draw(Shader shader, glm::mat4 cMatrix);
 	void update();
 
 	void computePoints();

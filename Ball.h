@@ -29,9 +29,6 @@ public:
 	glm::vec3 initPos;
 	glm::vec3 prevPos;	
 	glm::vec3 direction;
-
-/*	void turn(bool left, bool right, bool posAccel);*/	
-	glm::vec3 initVelocity;	
 	glm::vec3 cross(glm::vec3 a, glm::vec3 b);	
 	void draw(glm::mat4 cMatrix);
 	void update();
@@ -42,7 +39,7 @@ public:
 	void updateBoxVals();
 	float getMag(glm::vec3 dir);
 	Sphere * sphere;	
-	static clock_t t;
+	clock_t t;
 	glm::vec3 ballX;
 	glm::vec3 ballY;
 	glm::vec3 ballZ;
@@ -52,6 +49,6 @@ public:
 	glm::vec3 forwardForce;
 	void jump(bool accel);
 	bool inAir;
-	int turn = 1;
+	int turn;
 };
 #endif

@@ -6,7 +6,7 @@
 in float sampleExtraOutput;
 in vec2 TexCoord;
 
-
+uniform int isTexture;
 uniform sampler2D tile;
 
 // You can output many things. The first vec4 type output determines the color of the fragment
@@ -16,5 +16,10 @@ void main()
 {
     // Color everything a hot pink color. An alpha of 1.0f means it is not transparent.
     //color = vec4(0.5f, 1.0f, 0.0f, sampleExtraOutput);
-	color = texture(tile, TexCoord);
+	if(isTexture == 1){
+		color = texture(tile, TexCoord);
+	}
+	else{
+		color = vec4(0.0f, 0.0f, 1.0f, sampleExtraOutput);
+	}
 }
