@@ -28,9 +28,6 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 
 
 	randomInitial(1); 
-
-	aI->mass = 10000.0f;
-
 }
 
 void Scene::randomInitial(int seed) {
@@ -148,7 +145,7 @@ void Scene::initializeObjects()
 	ballBTrans = new MatrixTransform();
 
 	player = new Ball(true, glm::vec3(0.0f, 1, 0.0f), playerBallTrans);
-	Window::camera = new Camera(player);
+	Window::camera->player = player;
 
 	aI = new Ball(false, glm::vec3(0.0f, 1.0f, -25.0f), ballBTrans);
 
@@ -199,11 +196,13 @@ bool Scene::isCollide()
 void Scene::zoom(float scrollOffset, glm::vec3 & cam_pos)
 {
 	float fact = 0.0f;
-	if (scrollOffset > 0)
+	if (scrollOffset > 0){
 		fact = 1.5f;
 	}
 	if (scrollOffset < 0) {
 		fact = 0.75f;
+	}
+
 }
 void Scene::jumpPlayer(bool accel)
 {

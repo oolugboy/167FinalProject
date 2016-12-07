@@ -25,9 +25,9 @@ bool turnLeft = false;
 
 Camera * Window::camera;
 // Default camera parameters
-glm::vec3 Window::cam_pos(0.0f, 5.0f, 15.0f);		// e  | Position of camera
-glm::vec3 Window::cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
-glm::vec3 Window::cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
+//glm::vec3 Window::cam_pos(0.0f, 5.0f, 15.0f);		// e  | Position of camera
+//glm::vec3 Window::cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
+//glm::vec3 Window::cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
 /* For the birds eye view */
 /*
@@ -51,6 +51,7 @@ void Window::initialize_objects()
 	shaderProgram = LoadShaders(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
 	shaderProgram2 = LoadShaders(VERTEX_SHADER2_PATH, FRAGMENT_SHADER2_PATH);
 	scene = new Scene(1, shaderProgram, shaderProgram2);
+
 	/*Set the initial projection matrix */
 	P = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
 
@@ -104,6 +105,8 @@ GLFWwindow* Window::create_window(int width, int height)
 	// Get the width and height of the framebuffer to properly resize the window
 	glfwGetFramebufferSize(window, &width, &height);
 	// Call the resize callback to make sure things get drawn immediately
+
+	Window::camera = new Camera();
 	Window::resize_callback(window, width, height);
 
 	return window;
@@ -120,7 +123,8 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 	{
 		cout << " The projection is being set " << endl;
 		P = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
-		V = glm::lookAt(cam_pos, cam_look_at, cam_up);
+		//V = glm::lookAt(cam_pos, cam_look_at, cam_up);
+		V = camera->getV();
 	}
 }
 
@@ -135,17 +139,19 @@ void Window::display_callback(GLFWwindow* window)
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (camera_mode == 0) {
-		V = glm::lookAt(cam_pos, cam_look_at, cam_up);
-	}
-	else if(camera_mode == 1){
-		/* For the birds eye view */
-		glm::vec3 pos(0.0f, 50.0f, 0.0f);		// e  | Position of camera
-		glm::vec3 look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
-		glm::vec3 up(0.0f, 0.0f, 1.0f);			// up | What orientation "up" is 
+	//if (camera_mode == 0) {
+	//	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
+	//}
+	//else if(camera_mode == 1){
+	//	/* For the birds eye view */
+	//	glm::vec3 pos(0.0f, 50.0f, 0.0f);		// e  | Position of camera
+	//	glm::vec3 look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
+	//	glm::vec3 up(0.0f, 0.0f, 1.0f);			// up | What orientation "up" is 
 
-		V = glm::lookAt(pos, look_at, up);
-	}
+	//	V = glm::lookAt(pos, look_at, up);
+	//}
+
+	V = camera->getV();
 	
 
 	/** Draw the scene */
@@ -176,7 +182,7 @@ void Window::display_callback(GLFWwindow* window)
 	/** The mouse controls */
 	if (leftButton)
 	{
-		scene->mouseOrbit(lastPos, currPos,cam_pos, width, height);
+		scene->mouseOrbit(lastPos, currPos,camera->cam_pos, width, height);
 	}
 	if (rightButton)
 	{
@@ -226,7 +232,7 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		accelerate = false;
 	}
 	if (action == GLFW_PRESS && key == GLFW_KEY_C) {
-		camera_mode = (camera_mode + 1) % 2;
+		camera->changeMode();
 	}
 	if (action == GLFW_PRESS && key == GLFW_KEY_D) {
 		Window::debug = !Window::debug;
@@ -261,7 +267,7 @@ void Window::cursor_pos_callback(GLFWwindow * window, double xPos, double yPos)
 void Window::scroll_callback(GLFWwindow * window, double xOffset, double yOffset)
 {
 	scrollOffset = yOffset;	
-	scene->zoom(scrollOffset, cam_pos);
+	scene->zoom(scrollOffset, camera->cam_pos);
 }
 
  
