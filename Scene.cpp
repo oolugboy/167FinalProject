@@ -19,7 +19,7 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	m_shaderProgram1 = shaderProgram1;
 	m_shaderProgram2 = shaderProgram2;
 	skyBox = new SkyBox();
-	worldGroup = new Group();		
+	worldGroup = new Group();
 	boundBoxATrans = new MatrixTransform();
 	boundBoxBTrans = new MatrixTransform();
 	playerBallTrans = new MatrixTransform();
