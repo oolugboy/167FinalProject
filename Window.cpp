@@ -40,6 +40,7 @@ glm::vec3 Window::cam_up(0.0f, 0.0f, 1.0f);			// up | What orientation "up" is *
 
 int Window::width;
 int Window::height;
+int Window::isTexture = 1;
 bool Window::debug = true;
 
 glm::mat4 Window::P;
@@ -247,6 +248,10 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 	}
 	if (action == GLFW_PRESS && key == GLFW_KEY_D) {
 		Window::debug = !Window::debug;
+	}
+	if (action == GLFW_PRESS && key == GLFW_KEY_B) {
+		Window::isTexture = 1 + ((isTexture) % 2) ;
+		//printf("B: %d\n", Window::isTexture);
 	}
 }
 void Window::mouse_button_callback(GLFWwindow * window, int button, int action, int mods)
