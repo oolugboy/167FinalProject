@@ -1,4 +1,5 @@
 #include "Sphere.h"
+#include "Camera.h"
 #include <cmath>
 
 using namespace std;
@@ -125,7 +126,7 @@ void Sphere::render()
 	glUniformMatrix4fv(toWorldLoc, 1, GL_FALSE, &(toWorld[0][0]));
 
 	cam_posLoc = glGetUniformLocation(Window::agentShaderProgram, "cam_pos");
-	glUniform3fv(cam_posLoc, 1, &(Window::cam_pos[0]));
+	glUniform3fv(cam_posLoc, 1, &(Window::camera->cam_pos[0]));
 
 
 	// Now draw the cube. We simply need to bind the VAO associated with it.

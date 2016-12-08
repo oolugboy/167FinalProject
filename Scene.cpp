@@ -76,7 +76,7 @@ void Scene::randomInitial(int seed) {
 	collidableObjects[0]->matrixT->addChild(genSphere);
 	worldGroup->addChild(collidableObjects[0]);
 	
-	Window::camera = new Camera(player);
+	Window::camera->player = player;
 	
 	/** random position for the aI's */
 	for (int i = 1; i < numAgents; i++)
