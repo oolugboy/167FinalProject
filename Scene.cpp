@@ -34,7 +34,7 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	aISkyFaces[4] = "textures/aISkyBox/hell_bk.ppm";
 	aISkyFaces[5] = "textures/aISkyBox/hell_ft.ppm";
 
-	/* Load the textures for the players*/ 
+	/* Load the textures for the players*/
 	Ball::aITexID = SkyBox::loadCubeMap(aISkyFaces);
 
 	t = clock();
@@ -52,6 +52,10 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 
 void Scene::randomInitial(int seed) {
 	/* Initialize the required variables */
+
+	//Play song on startup
+	SoundEngine->play2D("audio/kirby.mp3", GL_TRUE);
+
 	worldMatTrans = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
 	worldGroup->children.clear();
 
@@ -205,7 +209,7 @@ void Scene::acceleratePlayers(bool posAccel)
 			collidableObjects[i]->accelerate(aIAccel);
 			collidableObjects[i]->turn = rand() % 3;
 		}
-	}	
+	}
 }
 bool Scene::isCollide()
 {
@@ -229,17 +233,17 @@ bool Scene::isCollide()
 
 				}
 				//collidableObjects[j]->handleCollision(collidableObjects[i]);
-				if(collidableObjects[i] == player || collidableObjects[j] == player)
+				if (collidableObjects[i] == player || collidableObjects[j] == player)
 					SoundEngine->play2D("audio/bounce.wav", GL_FALSE);
 			}
 		}
-	}	
+	}
 	return false;
 }
 void Scene::zoom(float scrollOffset, glm::vec3 & cam_pos)
 {
 	float fact = 0.0f;
-	if (scrollOffset > 0){
+	if (scrollOffset > 0) {
 		fact = 1.5f;
 	}
 	if (scrollOffset < 0) {

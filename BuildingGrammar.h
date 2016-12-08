@@ -32,7 +32,6 @@ class BuildingGrammar
 		BuildingGrammar();
 		~BuildingGrammar();
 		MatrixTransform * Build(glm::vec3 position, glm::vec3 scale, float rotationAngle);
-		GLuint loadTexture(GLchar * path);
 
 	private:
 		bool ParseString();

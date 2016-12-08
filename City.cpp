@@ -66,7 +66,7 @@ GLuint City::generateVAO() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	texture = loadTexture("textures/grass.jpg");
+	texture = loadTexture("textures/asphalt.jpg");
 
 	return VAO;
 }
