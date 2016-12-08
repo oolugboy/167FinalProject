@@ -8,6 +8,8 @@ float modder = pow(10, 9) + 7;
 float defaultAccel = 0.01f;
 
 
+vector <const GLchar * > playSkyFaces;
+vector <const GLchar * > aISkyFaces;
 /*AUDIO*/
 ISoundEngine *SoundEngine = createIrrKlangDevice();
 /*END*/
@@ -60,31 +62,6 @@ void Scene::randomInitial(int seed) {
 	if (seed >= 0) { srand(0); }
 	else { srand(time(NULL)); }
 
-	/* Set the initial position for the player */
-	playerBallTrans = new MatrixTransform();
-	player = new Ball(true, glm::vec3(0.0f, 1, 0.0f), playerBallTrans);
-	collidableObjects.push_back(player);
-	city->addObject(collidableObjects[0]->matrixT->transformMatrix);
-	collidableObjects[0]->matrixT->addChild(genCube);
-	collidableObjects[0]->matrixT->addChild(genSphere);
-	worldGroup->addChild(collidableObjects[0]);
-	
-	Window::camera->player = player;
-	
-	/** random position for the aI's */
-	for (int i = 1; i < numAgents; i++)
-	{
-		float xpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
-		float zpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
-		glm::vec3 trans = glm::vec3(xpos, 1.0f, zpos);
-		collidableObjects.push_back(new Ball(false, trans, new MatrixTransform()));	
-		city->addObject(collidableObjects[i]->matrixT->transformMatrix);
-		collidableObjects[i]->matrixT->addChild(genCube);
-		collidableObjects[i]->matrixT->addChild(genSphere);		
-		worldGroup->addChild(collidableObjects[i]);
-	}
-
-	initializeObjects();
 
 	for (int i = 0; i < world_grids; i++) {
 		float xpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
@@ -112,6 +89,32 @@ void Scene::randomInitial(int seed) {
 			worldGroup->addChild(cube1);*/
 		}
 	}
+
+
+	/* Set the initial position for the player */
+	playerBallTrans = new MatrixTransform();
+	player = new Ball(true, glm::vec3(0.0f, 1, 0.0f), playerBallTrans);
+	collidableObjects.push_back(player);
+	city->addObject(collidableObjects[0]->matrixT->transformMatrix);
+	collidableObjects[0]->matrixT->addChild(genCube);
+	collidableObjects[0]->matrixT->addChild(genSphere);
+	worldGroup->addChild(collidableObjects[0]);
+
+	Window::camera->player = player;
+
+	/** random position for the aI's */
+	for (int i = 1; i < numAgents; i++)
+	{
+		float xpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
+		float zpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
+		glm::vec3 trans = glm::vec3(xpos, 1.0f, zpos);
+		collidableObjects.push_back(new Ball(false, trans, new MatrixTransform()));
+		city->addObject(collidableObjects[i]->matrixT->transformMatrix);
+		collidableObjects[i]->matrixT->addChild(genCube);
+		collidableObjects[i]->matrixT->addChild(genSphere);
+		worldGroup->addChild(collidableObjects[i]);
+	}
+
 	worldGroup->addChild(city);
 }
 void Scene::draw()
@@ -126,7 +129,7 @@ void Scene::draw()
 	//Since skybox is fix size, so scale down the world to make the world looks bigger
 	//worldGroup->draw(worldMatTrans);
 	worldGroup->draw(glm::mat4(1.0f));
-	Particles->Draw();
+	//Particles->Draw();
 
 
 	/* Test the collision detection */
@@ -136,7 +139,7 @@ void Scene::draw()
 void Scene::update()
 {
 	worldGroup->update();
-	Particles->Update(0.00025, *player, 2, glm::vec2(1.0 / 2.0));
+	//Particles->Update(0.00025, *player, 2, glm::vec2(1.0 / 2.0));
 
 	//for (int i = 0; i <= collidableObjects.size(); i++) {
 	//	bool isLose = false;
@@ -200,11 +203,6 @@ void Scene::acceleratePlayers(bool posAccel)
 			collidableObjects[i]->turn = rand() % 3;
 		}
 	}	
-}
-
-void Scene::initializeObjects()
-{	
-
 }
 bool Scene::isCollide()
 {

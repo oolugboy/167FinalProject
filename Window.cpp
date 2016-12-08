@@ -163,10 +163,10 @@ void Window::display_callback(GLFWwindow* window)
 	scene->update();
 	/** Draw the scene */
 	float timeDiff = (float)clock() - timeCount;
-	if ((timeDiff / CLOCKS_PER_SEC > 1 / 100.0f)) {
+	//if ((timeDiff / CLOCKS_PER_SEC > 1 / 100.0f)) {
 		scene->draw();
 		timeCount = clock();
-	}
+	//}
 	/* Move the balls around */
 //	scene->moveBalls();
 	/* Turn the player according to user controls */
