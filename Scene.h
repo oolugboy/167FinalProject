@@ -78,5 +78,8 @@ class Scene
 		void jumpPlayer(bool accel);
 		vector< Object * > collidableObjects;		
 		clock_t t;
+
+		bool playerLosing;
+		int world_grids;
 };
 #endif

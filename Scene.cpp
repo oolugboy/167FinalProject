@@ -8,6 +8,10 @@ float modder = pow(10, 9) + 7;
 float defaultAccel = 0.01f;
 
 
+/*AUDIO*/
+ISoundEngine *SoundEngine = createIrrKlangDevice();
+/*END*/
+
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 {
 	Shader shader("shader/particle.vert", "shader/particle.frag");
@@ -32,10 +36,9 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 void Scene::randomInitial(int seed) {
 	/* Initialize the required variables */
 	worldMatTrans = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
+	worldGroup->children.clear();
 
-	//worldGroup->children.clear();
-
-	int world_grids = 100;
+	world_grids = 100;
 	city = new City(world_grids);
 	BuildingGrammar * buildingGram = new BuildingGrammar();
 
@@ -58,6 +61,7 @@ void Scene::randomInitial(int seed) {
 
 		glm::mat4 cMatrix = translate * scale * rot;
 
+		MatrixTransform * buildingTrans;
 		if (city->addObject(cMatrix)) {
 			//TODO: buildings are too height, cannot see anything for debug, might need a max hieght, and make the height depend on scale?
 			buildingTrans = buildingGram->Build(glm::vec3(xpos, 0.0f, zpos), glm::vec3(size), rotAngle);
@@ -95,7 +99,18 @@ void Scene::draw()
 	worldGroup->update();
 	Particles->Update(0.00025, *player, 2, glm::vec2(1.0 / 2.0));
 
+	//for (int i = 0; i <= collidableObjects.size(); i++) {
+	//	bool isLose = false;
+	//	if (collidableObjects[i]->currPos.x > world_grids / 2 || collidableObjects[i]->currPos.x < -world_grids / 2) {
+	//		isLose = true;
+	//	}
+	//	else if (collidableObjects[i]->currPos.z > world_grids / 2 || collidableObjects[i]->currPos.z < -world_grids / 2) {
+	//		isLose = true;
+	//	}
 
+	//	//worldGroup->removeChild(collidableObjects[i]);
+	//	//collidableObjects.erase(collidableObjects.begin() + i);
+	//}
 }
 void Scene::changePlayerDirection(float direction, bool posAccel)
 {

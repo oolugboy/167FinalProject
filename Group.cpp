@@ -18,35 +18,28 @@ bool Group::removeChild(Node * child)
 {
 	if (child != NULL)
 	{
-		children.remove(child);
-		return true;
+		bool remove = false;
+		for (int i = 0; i < children.size(); i++) {
+			if (children[i] == child) {
+				children.erase(children.begin() + i);
+				return true;
+			}
+		}
 	}
-	else
-		return false;
+	return false;
 }
 void Group::update()
 {
 	/** Call draw on the childeren */
-	list< Node *>::const_iterator lit = children.begin();
-	list< Node *>::const_iterator len = children.end();
-
-	for (; lit != len; lit++)
-	{
-		Node * curr = (*lit);
-		curr->update();
+	
+	for(int i = 0; i < children.size(); i++){
+		children[i]->update();
 	}
 }
 
 void Group::draw(glm::mat4 cMatrix)
 {	
-	/** Call draw on the childeren */
-	list< Node *>::const_iterator lit = children.begin();
-	list< Node *>::const_iterator len = children.end();
-
-	for (; lit != len && !children.empty(); lit++)
-	{
-		//cout << " about to call the child to draw " << endl;
-		Node * curr = (*lit);
-		curr->draw(cMatrix);
+	for (int i = 0; i < children.size(); i++) {
+		children[i]->draw(cMatrix);
 	}
 }

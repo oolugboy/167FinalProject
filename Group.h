@@ -29,6 +29,6 @@ public:
 	void update();	
 	bool addChild(Node * child);
 	bool removeChild(Node * child);
-	list< Node * > children;	
+	vector< Node * > children;	
 };
 #endif
