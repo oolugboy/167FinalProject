@@ -25,7 +25,7 @@ private:
 public:
 	SkyBox();
 	~SkyBox() {}
-	GLuint loadCubeMap(std::vector <const GLchar *> faces);
+	static GLuint loadCubeMap(std::vector <const GLchar *> faces);
 	GLuint skyBoxTexId;
 	glm::mat4 toWorld;
 	std::vector< const GLchar *> faces;
@@ -78,7 +78,7 @@ public:
 		-1.0f, -1.0f,  1.0f,
 		1.0f, -1.0f,  1.0f
 	};
-	unsigned char * loadPPM(const char * filename, int & width, int & height);
+	static unsigned char * loadPPM(const char * filename, int & width, int & height);
 	void loadCubeVertices(GLfloat skyBoxVertices[]);
 	void draw(GLuint shaderProgram);
 };

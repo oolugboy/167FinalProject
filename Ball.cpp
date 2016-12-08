@@ -1,9 +1,8 @@
 #include "Ball.h"
 #include <cmath>
 
-using namespace std;
-
-
+GLuint Ball::playerTexID;
+GLuint Ball:: aITexID;
 Ball::Ball(bool isPlayer, glm::vec3 position, MatrixTransform * matrixT)
 {	
 	this->prevPos = this->currPos = this->initPos = position;
@@ -39,7 +38,7 @@ Ball::Ball(bool isPlayer, glm::vec3 position, MatrixTransform * matrixT)
 
 void Ball::jump(bool accel)
 {
-	cout << " We are jumping " << endl;
+	//cout << " We are jumping " << endl;
 	inAir = true;
 	glm::vec3 upwardForce = (0.4f * ballY);
 	if (accel)
@@ -95,14 +94,13 @@ void Ball::accelerate(bool posAccel)
 	
 	//acceleration = (turn != 1) ? acceleration * 0.5f : acceleration;
 	acceleration = (turn != 1) ? acceleration  : acceleration;
-	cout << " The acceleration is ";
-	printVector(acceleration);
-
+	/*cout << " The acceleration is ";
+	printVector(acceleration); */
 }
 void Ball::update()
 {
 	clock_t temp = clock();
-	cout << " The temp is " << temp - t << endl;
+	//cout << " The temp is " << temp - t << endl;
 	currPos = glm::vec3(matrixT->transformMatrix[3]);
 
 	if (temp - t > 0.0002) {
@@ -117,24 +115,30 @@ void Ball::update()
 
 
 void Ball::draw(glm::mat4 cMatrix) {
+	glUseProgram(Window::agentShaderProgram);
+	if (isPlayer)
+		Sphere::textureID = playerTexID;
+	else
+		Sphere::textureID = aITexID;
 	matrixT->draw(cMatrix);
 }
 
 /* This function updates the initial and the final velocity */
 void Ball::updateVelocity(float sec)
 {
+//	cout << " About to update " << endl;
 	/* Update the object's directional attributes if the object is moving*/
 	if (currPos != prevPos)
 	{
 		glm::vec3 diff = currPos - prevPos;
 		direction = glm::normalize(glm::vec3(diff.x, 0.0f, diff.z));
 
-		cout << " The direction is ";
-		printVector(direction);
+	/*	cout << " The direction is ";
+		printVector(direction); */
 		ballZ = (-1.0f * direction);
 		ballX = glm::normalize(cross(ballY, ballZ));		
-		cout << " The acceleration is ";
-		printVector(acceleration);
+		/*cout << " The acceleration is ";
+		printVector(acceleration);*/
 	}
 	if (!(isPlayer))
 	{
@@ -176,13 +180,13 @@ void Ball::updateVelocity(float sec)
 	if (isPlayer)
 	{
 		//cout << " The speed is " << getMag(finalVelocity) << endl;
-		cout << " The finalVelocity  is ";
-		printVector(finalVelocity);
+		//cout << " The finalVelocity  is ";
+		//printVector(finalVelocity);
 	}
 	else
 	{		
-		cout << " The other player's updated acceleration is ";
-		printVector(acceleration);
+		//cout << " The other player's updated acceleration is ";
+		//printVector(acceleration);
 	}
 
 	prevPos = currPos;
@@ -216,8 +220,8 @@ float Ball::getMag(glm::vec3 dir)
 void Ball::moveAgent(float sec)
 {
 	glm::vec3 diff =(initVelocity * sec) + (0.50f * acceleration * pow(sec, 2));
-	cout << " The diff is ";
-	printVector(diff);
+	/*cout << " The diff is ";
+	printVector(diff);*/
 	matrixT->transformMatrix = glm::translate(glm::mat4(1.0f), diff) * matrixT->transformMatrix;
 }
 bool Ball::collidesWith(Object * otherObject)
@@ -242,7 +246,7 @@ bool Ball::collidesWith(Object * otherObject)
 	return false;
 }
 void Ball::handleCollision(Object * otherObject)
-{	
+{	/*
 	if (isPlayer)
 		cout << " The player handling collision " << endl;
 	else
@@ -252,7 +256,7 @@ void Ball::handleCollision(Object * otherObject)
 	{
 		cout << " The players initial pre collision velocity is ";
 		printVector(initVelocity);
-	}
+	}*/
 	
 	glm::vec3 collideVector = glm::normalize(otherObject->currPos - currPos);
 	if (glm::dot(collideVector, initVelocity) > 0.0f)
@@ -264,21 +268,13 @@ void Ball::handleCollision(Object * otherObject)
 	float zSpeed = (((initVelocity.z  * (this->mass - otherObject->mass)) + (2.0f * otherObject->mass * otherObject->initVelocity.z)) / (this->mass + otherObject->mass));
 
 	finalVelocity = glm::vec3(xSpeed, 0.0f, zSpeed);
-	matrixT->transformMatrix = glm::translate(glm::mat4(1.0f), finalVelocity * 600.0f) * matrixT->transformMatrix;
+	matrixT->transformMatrix = glm::translate(glm::mat4(1.0f), finalVelocity * 600.0f) * matrixT->transformMatrix;	
 
-	
-	//finalVelocity = glm::vec3(xSpeed, 0.0f, zSpeed) * 1.0f;
 	acceleration = (finalVelocity - initVelocity)/100.0f;
-	//acceleration = glm::vec3(0.0f);
-	//acceleration = (finalVelocity - initVelocity) / ((float)clock() - t) + acceleration;
 	t = clock();
-	/*if (getMag(initVelocity) < getMag(otherObject->initVelocity))
-	{
-		finalVelocity * (10.0f);
-		acceleration * (100.0f);
-	} */
+
 	/** Update the acceleration */
-	if (isPlayer == false)
+	/*if (isPlayer == false)
 	{
 		cout << " The aI post collision final velocity is ";
 		printVector(finalVelocity);
@@ -289,7 +285,7 @@ void Ball::handleCollision(Object * otherObject)
 		printVector(finalVelocity);
 		cout << " While the aI post collision final velocity is ";
 		printVector(otherObject->finalVelocity);
-	}
+	}*/
 
 }
 glm::vec3 Ball::cross(glm::vec3 a, glm::vec3 b)
@@ -299,3 +295,38 @@ glm::vec3 Ball::cross(glm::vec3 a, glm::vec3 b)
 	float zVal = (a.x * b.y) - (a.y * b.x);
 	return glm::vec3(xVal, yVal, zVal);
 }
+// This function loads a texture from file. Note: texture loading functions like these are usually 
+// managed by a 'Resource Manager' that manages all resources (like textures, models, audio). 
+// For learning purposes we'll just define it as a utility function.
+GLuint Ball::loadTexture(GLchar* path)
+{
+	//Generate texture ID and load texture data 
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	int width, height;
+	unsigned char* image = SOIL_load_image(path, &width, &height, 0, SOIL_LOAD_RGB);
+	if (image == NULL)
+	{
+		cout << " We could not load the image at " << path << " with width " << width << endl;
+	}
+	else
+	{
+		cout << " We just loaded the texture at " << path << " with width " << width << endl;
+	}
+	// Assign texture to ID
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	// Parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	SOIL_free_image_data(image);
+	return textureID;
+}
+
+
+

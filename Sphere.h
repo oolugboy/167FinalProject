@@ -17,8 +17,9 @@
 #include <cmath>
 #include <limits>
 #include "Geode.h"
-
+//#include "Camera.h"
 using namespace std;
+class Camera;
 class Sphere : public Geode
 {
 public:
@@ -36,5 +37,6 @@ public:
 	bool inBound();
 	vector <float > dVals;
 	vector < glm::vec3 > frustNorms;	
+	static GLuint textureID;
 };
 #endif
