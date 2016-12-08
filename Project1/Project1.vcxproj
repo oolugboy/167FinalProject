@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Ball.cpp" />
+    <ClCompile Include="..\Building.cpp" />
     <ClCompile Include="..\BuildingGrammar.cpp" />
     <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\City.cpp" />
@@ -161,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Ball.h" />
+    <ClInclude Include="..\Building.h" />
     <ClInclude Include="..\BuildingGrammar.h" />
     <ClInclude Include="..\Camera.h" />
     <ClInclude Include="..\City.h" />

@@ -83,8 +83,8 @@ void Ball::accelerate(bool posAccel)
 	acceleration = (turn != 1) ? acceleration  : acceleration;
 	if (isPlayer)
 	{
-		cout << " The just done acceleration is ";
-		printVector(acceleration);
+		//cout << " The just done acceleration is ";
+		//printVector(acceleration);
 	}
 }
 void Ball::update()
@@ -104,9 +104,9 @@ void Ball::update()
 
 		if (isPlayer)
 		{
-			cout << "FALL" << endl;
-			cout << " The currPos is ";
-			printVector(currPos);
+			//cout << "FALL" << endl;
+			//cout << " The currPos is ";
+			//printVector(currPos);
 		}		
 }
 void Ball::draw(glm::mat4 cMatrix) {
@@ -145,9 +145,9 @@ void Ball::updateVelocity(float sec)
 	/*Update the velociy */
 	if (isPlayer)
 	{
-		printf("Begin of Calculation %d, (%f,%f,%f), |%f|, (%f,%f,%f), |%f|\n", inAir,
+		/*printf("Begin of Calculation %d, (%f,%f,%f), |%f|, (%f,%f,%f), |%f|\n", inAir,
 			finalVelocity.x, finalVelocity.y, finalVelocity.z, getMag(finalVelocity),
-			initVelocity.x, initVelocity.y, initVelocity.z, getMag(initVelocity));
+			initVelocity.x, initVelocity.y, initVelocity.z, getMag(initVelocity));*/
 	}
 	initVelocity = finalVelocity;
 
@@ -186,9 +186,9 @@ void Ball::updateVelocity(float sec)
 
 	if (isPlayer)
 	{
-		printf("End of Calculation %d (%f,%f,%f), |%f|, (%f,%f,%f), |%f|\n", inAir,
+		/*printf("End of Calculation %d (%f,%f,%f), |%f|, (%f,%f,%f), |%f|\n", inAir,
 			finalVelocity.x, finalVelocity.y, finalVelocity.z, getMag(finalVelocity),
-			initVelocity.x, initVelocity.y, initVelocity.z, getMag(initVelocity));
+			initVelocity.x, initVelocity.y, initVelocity.z, getMag(initVelocity));*/
 		//cout << " The speed is " << getMag(finalVelocity) << endl;
 		//cout << " The finalVelocity  is ";
 		//printVector(finalVelocity);
@@ -286,9 +286,9 @@ void Ball::handleCollision(Object * otherObject)
 	float zSpeed = (((initVelocity.z  * (this->mass - otherObject->mass)) + (2.0f * otherObject->mass * otherObject->initVelocity.z)) / (this->mass + otherObject->mass));
 
 	finalVelocity = glm::vec3(xSpeed, 0.0f, zSpeed);
-	matrixT->transformMatrix = glm::translate(glm::mat4(1.0f), finalVelocity * 600.0f) * matrixT->transformMatrix;	
+	matrixT->transformMatrix = glm::translate(glm::mat4(1.0f), finalVelocity * 200.0f) * matrixT->transformMatrix;	
 
-	acceleration = (finalVelocity - initVelocity)/100.0f;
+	acceleration = (finalVelocity - initVelocity)/500.0f;
 	t = clock();
 
 	/** Update the acceleration */

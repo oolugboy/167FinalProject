@@ -85,8 +85,10 @@ void Scene::randomInitial(int seed) {
 		MatrixTransform * buildingTrans;
 		if (city->addObject(cMatrix)) {
 			//TODO: buildings are too height, cannot see anything for debug, might need a max hieght, and make the height depend on scale?
-			buildingTrans = buildingGram->Build(glm::vec3(xpos, 0.0f, zpos), glm::vec3(size), rotAngle);
-			worldGroup->addChild(buildingTrans);
+			buildingTrans = buildingGram->Build(glm::vec3(xpos, 0.0f, zpos), glm::vec3(size), 0.0f);
+			Building * building = new Building(false, glm::vec3(xpos, 0.0f, zpos), buildingTrans);
+			worldGroup->addChild(building);
+			collidableObjects.push_back(building);
 			/*MatrixTransform* cube1 = new MatrixTransform();
 			glm::mat4 cube1_matrix = cube1->transformMatrix * translate * scale * rot;
 			cube1->transformMatrix = cube1_matrix;
@@ -100,10 +102,10 @@ void Scene::randomInitial(int seed) {
 	playerBallTrans = new MatrixTransform();
 	player = new Ball(true, glm::vec3(0.0f, 1, 0.0f), playerBallTrans);
 	collidableObjects.push_back(player);
-	city->addObject(collidableObjects[0]->matrixT->transformMatrix);
-	collidableObjects[0]->matrixT->addChild(genCube);
-	collidableObjects[0]->matrixT->addChild(genSphere);
-	worldGroup->addChild(collidableObjects[0]);
+	city->addObject(player->matrixT->transformMatrix);
+	player->matrixT->addChild(genCube);
+	player->matrixT->addChild(genSphere);
+	worldGroup->addChild(player);
 
 	Window::camera->player = player;
 
@@ -113,11 +115,12 @@ void Scene::randomInitial(int seed) {
 		float xpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
 		float zpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
 		glm::vec3 trans = glm::vec3(xpos, 1.0f, zpos);
-		collidableObjects.push_back(new Ball(false, trans, new MatrixTransform()));
-		city->addObject(collidableObjects[i]->matrixT->transformMatrix);
-		collidableObjects[i]->matrixT->addChild(genCube);
-		collidableObjects[i]->matrixT->addChild(genSphere);
-		worldGroup->addChild(collidableObjects[i]);
+		Ball * ball = new Ball(false, trans, new MatrixTransform());
+		collidableObjects.push_back(ball);
+		city->addObject(ball->matrixT->transformMatrix);
+		ball->matrixT->addChild(genCube);
+		ball->matrixT->addChild(genSphere);
+		worldGroup->addChild(ball);
 	}
 
 	worldGroup->addChild(city);
@@ -224,10 +227,10 @@ glm::vec3 Scene::trackBallMapping(glm::vec3 point, int width, int height)
 void Scene::acceleratePlayers(bool posAccel)
 {
 	player->accelerate(posAccel);
-	for (int i = 1; i < numAgents; i++)
+	for (int i = 0; i < collidableObjects.size(); i++)
 	{
 		bool aIAccel = (rand() % 2);
-		if (collidableObjects[i]->movable == true)
+		if (collidableObjects[i]->movable == true && collidableObjects[i] != player)
 		{
 			collidableObjects[i]->accelerate(aIAccel);
 			collidableObjects[i]->turn = rand() % 3;

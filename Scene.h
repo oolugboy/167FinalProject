@@ -26,6 +26,7 @@
 #include "PinchedCube.h"
 #include "MatrixTransform.h"
 #include "Ball.h"
+#include "Building.h"
 #include "City.h"
 #include <string>
 #include <time.h>
