@@ -120,7 +120,6 @@ BuildingGrammar::BuildingGrammar()
 	
 	//Initialize Our building shapes
 	//WARNING NEED TO MOVE THIS ELSEWHERE SO WE DON'T RUN OUT OF MEMORY
-	sphere = new Sphere(2, false);
 	cube1 = new Cube("textures/building1.jpg");
 	cube2 = new Cube("textures/building2.jpg");
 	cube3 = new Cube("textures/building3.jpg");
@@ -207,7 +206,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 	}
 
 	//DEBUG Print the final string
-	cout << "Final String: " << gram_str << endl;
+	//cout << "Final String: " << gram_str << endl;
 
 	//------Build building using the string
 
@@ -233,7 +232,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(cube);
 				buildingTrans->addChild(shapeTrans);
-				cout << "Building Cube" << endl;
+				//cout << "Building Cube" << endl;
 				break;
 			}
 			case '1':
@@ -243,7 +242,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(cube);
 				buildingTrans->addChild(shapeTrans);
-				cout << "Building Cube" << endl;
+				//cout << "Building Cube" << endl;
 				break;
 			}
 			case '2':
@@ -253,7 +252,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(cube);
 				buildingTrans->addChild(shapeTrans);
-				cout << "Building Sphere" << endl;
+				//cout << "Building Sphere" << endl;
 				break;
 			}
 			case '3':
@@ -263,7 +262,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(trapezoid);
 				buildingTrans->addChild(shapeTrans);
-				cout << "Building Sphere" << endl;
+				//cout << "Building Sphere" << endl;
 				break;
 			}
 			case '4':
@@ -273,7 +272,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(pyramid);
 				buildingTrans->addChild(shapeTrans);
-				cout << "Building Sphere" << endl;
+				//cout << "Building Sphere" << endl;
 				break;
 			}
 			case '5':
@@ -283,7 +282,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(slantedTop);
 				buildingTrans->addChild(shapeTrans);
-				cout << "Building Sphere" << endl;
+				//cout << "Building Sphere" << endl;
 				break;
 			}
 			case '6':
@@ -293,7 +292,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(pinchedCube);
 				buildingTrans->addChild(shapeTrans);
-				cout << "Building Sphere" << endl;
+				//cout << "Building Sphere" << endl;
 				break;
 			}
 			default:
@@ -314,7 +313,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 bool BuildingGrammar::ParseString() 
 {
 	//DEBUG
-	cout << "Grammar String " << gram_str << endl;
+	//cout << "Grammar String " << gram_str << endl;
 
 	string temp_str = "";	//Temp string to build during symbol replacement
 	bool finished = true;	//Whether or not we have fully finished replacing symbols
@@ -327,7 +326,7 @@ bool BuildingGrammar::ParseString()
 		choice = rand() % 100 + 1;	//Get a random number from 1-100 (simulate % chance)
 		
 		//DEBUG
-		cout << cur_symbol << endl;
+		//cout << cur_symbol << endl;
 
 		//Switch case for which rule to use depending on the symbol
 		switch(cur_symbol) {
