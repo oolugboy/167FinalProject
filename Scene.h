@@ -30,6 +30,7 @@
 #include <string>
 #include <time.h>
 #include "Camera.h"
+#include "Particle.h"
 
 //Sound effects
 #include <irrKlang.h>
@@ -64,11 +65,10 @@ class Scene
 		glm::vec3 aITrans;
 		glm::mat4 worldMatTrans;
 		City* city;
+		ParticleGenerator *Particles;
 		Ball * player;
 		Ball * aI;
-		void buildGraph();
 		void initializeObjects();
-		void moveBalls();	
 		bool isCollide();
 		void changePlayerDirection(float direction, bool posAccel);
 		Sphere * genSphere;
@@ -78,8 +78,10 @@ class Scene
 		void jumpPlayer(bool accel);
 		vector< Object * > collidableObjects;		
 		clock_t t;
-		vector< Ball * > aIs;	
 		void update();
 		float numAgents;
+
+		bool playerLosing;
+		int world_grids;
 };
 #endif

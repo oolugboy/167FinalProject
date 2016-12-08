@@ -1,5 +1,5 @@
-#ifndef _GROUP_H_
-#define _GROUP_H_
+#ifndef _PARTICALMASTER_H_
+#define _ParticleMaster_H_
 
 
 #include <iostream>
@@ -17,18 +17,20 @@
 #include <cmath>
 #include <limits>
 #include <list>
-#include "Node.h"  
+#include "Group.h"  
+#include "Particle.h"  
+#include <typeinfo>
 
 
 using namespace std;
-class Group : public Node
+class ParticleMaster : public Group
 {
 public:
-	Group() {};
+	ParticleMaster() {};
+	bool addChild(Particle * child);
+	bool removeChild(Particle * child);
+	void update();
 	void draw(glm::mat4 cMatrix);
-	void update();	
-	bool addChild(Node * child);
-	bool removeChild(Node * child);
-	vector< Node * > children;	
+	std::vector< Particle * > childrens;
 };
 #endif

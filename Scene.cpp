@@ -7,16 +7,12 @@ float PI = 3.14159265;
 float modder = pow(10, 9) + 7;
 float defaultAccel = 0.01f;
 
-/*~~ SHAPE GRAMMAR TESTING*/
-MatrixTransform * buildingTrans;
-/*~~ END */
+
 vector <const GLchar * > playSkyFaces;
 vector <const GLchar * > aISkyFaces;
-
 /*AUDIO*/
 ISoundEngine *SoundEngine = createIrrKlangDevice();
 /*END*/
-
 
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 {
@@ -56,42 +52,20 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 
 void Scene::randomInitial(int seed) {
 	/* Initialize the required variables */
+
+	//Play song on startup
+	SoundEngine->play2D("audio/kirby.mp3", GL_TRUE);
+
 	worldMatTrans = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
+	worldGroup->children.clear();
 
-	//worldGroup->children.clear();
-
-	int world_grids = 100;
+	world_grids = 100;
 	city = new City(world_grids);
 	BuildingGrammar * buildingGram = new BuildingGrammar();
 
 	if (seed >= 0) { srand(0); }
 	else { srand(time(NULL)); }
 
-	/* Set the initial position for the player */
-	playerBallTrans = new MatrixTransform();
-	player = new Ball(true, glm::vec3(0.0f, 1, 0.0f), playerBallTrans);
-	collidableObjects.push_back(player);
-	city->addObject(collidableObjects[0]->matrixT->transformMatrix);
-	collidableObjects[0]->matrixT->addChild(genCube);
-	collidableObjects[0]->matrixT->addChild(genSphere);
-	worldGroup->addChild(collidableObjects[0]);
-	
-	Window::camera->player = player;
-	
-	/** random position for the aI's */
-	for (int i = 1; i < numAgents; i++)
-	{
-		float xpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
-		float zpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
-		glm::vec3 trans = glm::vec3(xpos, 1.0f, zpos);
-		collidableObjects.push_back(new Ball(false, trans, new MatrixTransform()));
-		city->addObject(collidableObjects[i]->matrixT->transformMatrix);
-		collidableObjects[i]->matrixT->addChild(genCube);
-		collidableObjects[i]->matrixT->addChild(genSphere);
-		worldGroup->addChild(collidableObjects[i]);
-	}
-
-	initializeObjects();
 
 	for (int i = 0; i < world_grids; i++) {
 		float xpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
@@ -107,6 +81,7 @@ void Scene::randomInitial(int seed) {
 
 		glm::mat4 cMatrix = translate * scale * rot;
 
+		MatrixTransform * buildingTrans;
 		if (city->addObject(cMatrix)) {
 			//TODO: buildings are too height, cannot see anything for debug, might need a max hieght, and make the height depend on scale?
 			buildingTrans = buildingGram->Build(glm::vec3(xpos, 0.0f, zpos), glm::vec3(size), rotAngle);
@@ -118,6 +93,32 @@ void Scene::randomInitial(int seed) {
 			worldGroup->addChild(cube1);*/
 		}
 	}
+
+
+	/* Set the initial position for the player */
+	playerBallTrans = new MatrixTransform();
+	player = new Ball(true, glm::vec3(0.0f, 1, 0.0f), playerBallTrans);
+	collidableObjects.push_back(player);
+	city->addObject(collidableObjects[0]->matrixT->transformMatrix);
+	collidableObjects[0]->matrixT->addChild(genCube);
+	collidableObjects[0]->matrixT->addChild(genSphere);
+	worldGroup->addChild(collidableObjects[0]);
+
+	Window::camera->player = player;
+
+	/** random position for the aI's */
+	for (int i = 1; i < numAgents; i++)
+	{
+		float xpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
+		float zpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
+		glm::vec3 trans = glm::vec3(xpos, 1.0f, zpos);
+		collidableObjects.push_back(new Ball(false, trans, new MatrixTransform()));
+		city->addObject(collidableObjects[i]->matrixT->transformMatrix);
+		collidableObjects[i]->matrixT->addChild(genCube);
+		collidableObjects[i]->matrixT->addChild(genSphere);
+		worldGroup->addChild(collidableObjects[i]);
+	}
+
 	worldGroup->addChild(city);
 }
 void Scene::draw()
@@ -132,6 +133,7 @@ void Scene::draw()
 	//Since skybox is fix size, so scale down the world to make the world looks bigger
 	//worldGroup->draw(worldMatTrans);
 	worldGroup->draw(glm::mat4(1.0f));
+	//Particles->Draw();
 
 
 	/* Test the collision detection */
@@ -141,6 +143,20 @@ void Scene::draw()
 void Scene::update()
 {
 	worldGroup->update();
+	//Particles->Update(0.00025, *player, 2, glm::vec2(1.0 / 2.0));
+
+	//for (int i = 0; i <= collidableObjects.size(); i++) {
+	//	bool isLose = false;
+	//	if (collidableObjects[i]->currPos.x > world_grids / 2 || collidableObjects[i]->currPos.x < -world_grids / 2) {
+	//		isLose = true;
+	//	}
+	//	else if (collidableObjects[i]->currPos.z > world_grids / 2 || collidableObjects[i]->currPos.z < -world_grids / 2) {
+	//		isLose = true;
+	//	}
+
+	//	//worldGroup->removeChild(collidableObjects[i]);
+	//	//collidableObjects.erase(collidableObjects.begin() + i);
+	//}
 }
 void Scene::changePlayerDirection(float direction, bool posAccel)
 {
@@ -191,11 +207,6 @@ void Scene::acceleratePlayers(bool posAccel)
 			collidableObjects[i]->turn = rand() % 3;
 		}
 	}
-}
-
-void Scene::initializeObjects()
-{
-
 }
 bool Scene::isCollide()
 {
