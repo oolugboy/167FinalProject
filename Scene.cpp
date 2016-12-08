@@ -19,7 +19,7 @@ ISoundEngine *SoundEngine = createIrrKlangDevice();
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 {
 	//Play song on start up
-	SoundEngine->play2D("audio/supermonkeyball.mp3", GL_TRUE);
+	SoundEngine->play2D("audio/kirby.mp3", GL_TRUE);
 	t = clock();
 	m_shaderProgram1 = shaderProgram1;
 	m_shaderProgram2 = shaderProgram2;
