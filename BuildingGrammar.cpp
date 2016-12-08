@@ -61,8 +61,8 @@ using namespace std;
 const int FIXED_CHANCE_0M = 50;
 const int FIXED_CHANCE_1M = 50;
 //Set 2 : Symbol M
-const int FIXED_CHANCE_2M = 70;
-const int FIXED_CHANCE_2T = 30;
+const int FIXED_CHANCE_2M = 40;
+const int FIXED_CHANCE_2T = 60;
 //Set 3 : Symbol T
 const int FIXED_CHANCE_3 = 25;
 const int FIXED_CHANCE_4 = 25;
@@ -223,11 +223,14 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 	for (int i = 0; i < gram_str.length(); i++) 
 	{
 		char cur_symbol = gram_str[i];
+
+		int shrink = rand() % 100 + 1;
 		switch (cur_symbol)
 		{
 			case '0':
 			{
 				MatrixTransform * shapeTrans = new MatrixTransform();
+				if(shrink <= 50) shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(0.8,1.0f,0.8f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(cube);
@@ -238,6 +241,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 			case '1':
 			{	
 				MatrixTransform * shapeTrans = new MatrixTransform();
+				if(shrink <= 50) shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(0.8,1.0f,0.8f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(cube);
@@ -248,6 +252,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 			case '2':
 			{
 				MatrixTransform * shapeTrans = new MatrixTransform();
+				if(shrink <= 50) shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(0.8,1.0f,0.8f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(cube);
@@ -258,6 +263,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 			case '3':
 			{
 				MatrixTransform * shapeTrans = new MatrixTransform();
+				if(shrink <= 50) shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(0.8,1.0f,0.8f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(trapezoid);
@@ -268,6 +274,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 			case '4':
 			{
 				MatrixTransform * shapeTrans = new MatrixTransform();
+				if(shrink <= 50) shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(0.8,1.0f,0.8f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(pyramid);
@@ -278,6 +285,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 			case '5':
 			{
 				MatrixTransform * shapeTrans = new MatrixTransform();
+				if(shrink <= 50) shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(0.8,1.0f,0.8f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(slantedTop);
@@ -288,6 +296,7 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 			case '6':
 			{
 				MatrixTransform * shapeTrans = new MatrixTransform();
+				if(shrink <= 50) shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(0.8,1.0f,0.8f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 				shapeTrans->transformMatrix = shapeTrans->transformMatrix * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, height, 0.0f));
 				shapeTrans->addChild(pinchedCube);
