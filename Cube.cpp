@@ -148,7 +148,7 @@ void Cube::render()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 	// Tell OpenGL to draw with triangles, using 36 indices, the type of the indices, and the offset to start from
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawArrays(GL_TRIANGLES, 0, vertNum);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	// Unbind the VAO when we're done so we don't accidentally draw extra stuff or tamper with its bound buffers
 	glBindVertexArray(0);

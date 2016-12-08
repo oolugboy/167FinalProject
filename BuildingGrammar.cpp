@@ -104,10 +104,10 @@ BuildingGrammar::BuildingGrammar()
 	sphere = new Sphere(2, false);
 	cube = new Cube("textures/building_glass.jpg");
 	//cube = new Cube(false);
-	pyramid = new Pyramid(false);
-	slantedTop = new SlantedTop(false);
-	trapezoid = new Trapezoid(false);
-	pinchedCube = new PinchedCube(false);
+	pyramid = new Pyramid("textures/container.jpg");
+	slantedTop = new SlantedTop("textures/container.jpg");
+	trapezoid = new Trapezoid("textures/container.jpg");
+	pinchedCube = new PinchedCube("textures/container.jpg");
 }
 
 //Deconstructor
