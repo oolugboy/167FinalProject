@@ -118,6 +118,8 @@ void Sphere::render()
 	glBindVertexArray(VAO);
 	glEnable(GL_DEPTH_TEST);
 
+	glUniform1i(glGetUniformLocation(Window::shaderProgram2, "isTexture"), 0);
+
 	/* figure out the width of the lines*/
 	if (wired)
 	{

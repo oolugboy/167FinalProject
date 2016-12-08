@@ -22,6 +22,9 @@ bool turnLeft = false;
 #define FRAGMENT_SHADER_PATH "../shader.frag"
 #define VERTEX_SHADER2_PATH "../shader2.vert"
 #define FRAGMENT_SHADER2_PATH "../shader2.frag"
+#define VERTEX_SHADER3_PATH "../shader3.vert"
+#define FRAGMENT_SHADER3_PATH "../shader3.frag"
+
 
 // Default camera parameters
 glm::vec3 Window::cam_pos(0.0f, 5.0f, 15.0f);		// e  | Position of camera

@@ -64,13 +64,13 @@ void Scene::randomInitial(int seed) {
 
 		if (city->addObject(cMatrix)) {
 			//TODO: buildings are too height, cannot see anything for debug, might need a max hieght, and make the height depend on scale?
-			//buildingTrans = buildingGram->Build(glm::vec3(xpos, 0.0f, zpos), glm::vec3(size), rotAngle);
-			//worldGroup->addChild(buildingTrans);
-			MatrixTransform* cube1 = new MatrixTransform();
+			buildingTrans = buildingGram->Build(glm::vec3(xpos, 0.0f, zpos), glm::vec3(size), rotAngle);
+			worldGroup->addChild(buildingTrans);
+			/*MatrixTransform* cube1 = new MatrixTransform();
 			glm::mat4 cube1_matrix = cube1->transformMatrix * translate * scale * rot;
 			cube1->transformMatrix = cube1_matrix;
 			cube1->addChild(genCube);
-			worldGroup->addChild(cube1);
+			worldGroup->addChild(cube1);*/
 		}
 	}
 

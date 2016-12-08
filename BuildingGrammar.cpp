@@ -46,8 +46,8 @@ using namespace std;
 	B -> 0M				50%
 	B -> 1M				50%
 
-	M -> 2M				100%
-	M -> 2T				0%
+	M -> 2M				70%
+	M -> 2T				30%
 
 	T -> 3				25%
 	T -> 4				25%
@@ -61,8 +61,8 @@ using namespace std;
 const int FIXED_CHANCE_0M = 50;
 const int FIXED_CHANCE_1M = 50;
 //Set 2 : Symbol M
-const int FIXED_CHANCE_2M = 100;
-const int FIXED_CHANCE_2T = 0;
+const int FIXED_CHANCE_2M = 70;
+const int FIXED_CHANCE_2T = 30;
 //Set 3 : Symbol T
 const int FIXED_CHANCE_3 = 25;
 const int FIXED_CHANCE_4 = 25;
@@ -102,7 +102,8 @@ BuildingGrammar::BuildingGrammar()
 	//Initialize Our building shapes
 	//WARNING NEED TO MOVE THIS ELSEWHERE SO WE DON'T RUN OUT OF MEMORY
 	sphere = new Sphere(2, false);
-	cube = new Cube(false);
+	cube = new Cube("textures/building_glass.jpg");
+	//cube = new Cube(false);
 	pyramid = new Pyramid(false);
 	slantedTop = new SlantedTop(false);
 	trapezoid = new Trapezoid(false);
@@ -296,10 +297,10 @@ bool BuildingGrammar::ParseString()
 				{
 					temp_str.append("2M");
 					height_counter += 1;
-					if (height_counter >= 5)
+					if (height_counter >= 3)
 					{
-						CHANCE_2M = 80;
-						CHANCE_2T = 20;
+						CHANCE_2M = 0;
+						CHANCE_2T = 100;
 					}
 				}
 				//Rule 4: M -> 2T (0%)
@@ -338,4 +339,3 @@ bool BuildingGrammar::ParseString()
 	//Return whether or not we have finished replacing all replaceable symbols in the string
 	return finished;
 }
-
