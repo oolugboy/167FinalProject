@@ -15,6 +15,11 @@ Geode::Geode()
 	yWidth = 2;
 	zWidth = 2;	
 }
+
+Geode::~Geode() {
+
+}
+
 void Geode::draw(glm::mat4 cMatrix)
 {	
 	/* Then render the program */

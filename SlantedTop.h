@@ -30,27 +30,6 @@ public:
 
 	glm::vec4 axisBounds[3];
 
-	// Note that GL_QUADS is deprecated in modern OpenGL (and removed from OSX systems).
-	// This is why we need to draw each face as 2 triangles instead of 1 quadrilateral
-	const GLuint indices[8][3] = {
-		// Front face
-		{4, 1, 0},
-		// Right face 1
-		{5, 2, 1},
-		// Right face 2
-		{1, 4, 5},
-		// Back face
-		{5, 3, 2},
-		// Left face 1
-		{4, 0, 3},
-		// Left face 2
-		{5, 4, 3},
-		// Bottom face 1
-		{0, 1, 2},
-		// Bottom face 2
-		{2, 3, 0},
-	};	
-
 	const glm::vec3 vertices[24] = {
 		//Front
 		glm::vec3(1.0f,  1.0f, -1.0f),

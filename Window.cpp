@@ -65,6 +65,7 @@ void Window::initialize_objects()
 }
 
 // Treat this as a destructor function. Delete dynamically allocated memory here.
+
 void Window::clean_up()
 {
 	glDeleteProgram(shaderProgram);
@@ -137,6 +138,11 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 
 void Window::idle_callback()
 {
+	if (scene->playerDied)
+	{
+		delete(scene);
+		scene = new Scene(1, shaderProgram, shaderProgram2);
+	}
 	// Call the update function the cube
 	//skyBox->spin(1);
 }

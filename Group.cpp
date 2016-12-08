@@ -43,3 +43,9 @@ void Group::draw(glm::mat4 cMatrix)
 		children[i]->draw(cMatrix);
 	}
 }
+
+Group::~Group() {
+	for each(Node * node in children) {
+		//delete(node);
+	}
+}

@@ -25,6 +25,7 @@ class Geode : public Node
 {
 public:
 	Geode();
+	~Geode();
 	void draw(glm::mat4 cMatrix);
 	void update();
 	GLuint loadTexture(GLchar *);

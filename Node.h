@@ -23,12 +23,12 @@ class Node
 {
 public:
 	Node();
+	virtual ~Node() {}
 	virtual void draw(glm::mat4 cMatrix) = 0;
 	virtual void update() = 0;	
 	void printMatrix(glm::mat4 matrix);
 	void printVector(glm::vec3 vector);
 	bool culled;
-	~Node();
 };
 #endif
 

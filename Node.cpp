@@ -23,6 +23,3 @@ void Node::printVector(glm::vec3 vector)
 {
 	cout << vector.x << " " << vector.y << " " << vector.z << endl;
 }
-Node::~Node()
-{
-}

@@ -43,6 +43,7 @@ using namespace irrklang;
 class Scene
 {
 	public:
+		bool playerDied = false;
 		int m_numRobots;
 		GLint m_shaderProgram1;
 		GLint m_shaderProgram2;

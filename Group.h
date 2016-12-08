@@ -25,6 +25,7 @@ class Group : public Node
 {
 public:
 	Group() {};
+	~Group();
 	void draw(glm::mat4 cMatrix);
 	void update();	
 	bool addChild(Node * child);

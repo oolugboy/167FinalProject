@@ -4,9 +4,9 @@
 GLuint Building::playerTexID;
 GLuint Building:: aITexID;
 Building::Building(bool isPlayer, glm::vec3 position, MatrixTransform * matrixT)
-{	
+{
 	this->prevPos = this->currPos = this->initPos = position;
-	this->isPlayer = isPlayer;		
+	this->isPlayer = isPlayer;
 	maxSpeed = 0.01f;
 	movable = false;
 
@@ -21,7 +21,7 @@ Building::Building(bool isPlayer, glm::vec3 position, MatrixTransform * matrixT)
 	/* These are the objects relative x,y, and z coordinates */
 	this->BuildingX = glm::vec3(1.0f, 0.0f, 0.0f);
 	this->BuildingY = glm::vec3(0.0f, 1.0f, 0.0f);
-	this->BuildingZ = glm::vec3(0.0f, 0.0f, 1.0f);	
+	this->BuildingZ = glm::vec3(0.0f, 0.0f, 1.0f);
 
 	this->direction = -1.0f * BuildingZ;
 
@@ -33,9 +33,12 @@ Building::Building(bool isPlayer, glm::vec3 position, MatrixTransform * matrixT)
 	turn = 1;
 
 	this->matrixT = matrixT;
-	printMatrix(matrixT->transformMatrix);
 }
 
+Building::~Building() {
+	cout << "delete building" << endl;
+	delete(matrixT);
+}
 void Building::accelerate(bool posAccel)
 {
 }

@@ -7,16 +7,25 @@ float PI = 3.14159265;
 float modder = pow(10, 9) + 7;
 float defaultAccel = 0.01f;
 
+clock_t curTime;
+
 
 vector <const GLchar * > playSkyFaces;
 vector <const GLchar * > aISkyFaces;
 /*AUDIO*/
-ISoundEngine *SoundEngine = createIrrKlangDevice();
-bool can_fall = true;
+ISoundEngine * SoundEngine;
+BuildingGrammar * buildingGram;
 /*END*/
+
+bool can_fall = true;
+
 
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 {
+	SoundEngine = createIrrKlangDevice();
+	playerDied = false;
+	can_fall = true;
+
 	playSkyFaces.resize(6);
 	playSkyFaces[0] = "textures/playerSkyBox/perdicus_rt.ppm";
 	playSkyFaces[1] = "textures/playerSkyBox/perdicus_lf.ppm";
@@ -62,8 +71,8 @@ void Scene::randomInitial(int seed) {
 
 	world_grids = 100;
 	city = new City(world_grids);
-	BuildingGrammar * buildingGram = new BuildingGrammar();
-
+	buildingGram = new BuildingGrammar();
+	seed = -1;
 	if (seed >= 0) { srand(0); }
 	else { srand(time(NULL)); }
 
@@ -167,7 +176,10 @@ void Scene::update()
 	if (player->inAir && can_fall == true) {
 		can_fall = false;
 		SoundEngine->play2D("audio/scream.wav", GL_FALSE);
+		curTime = clock();
 	}
+	if (can_fall == false && (clock() - curTime) / CLOCKS_PER_SEC > 3.0f)
+		playerDied = true;
 
 	//Particles->Update(0.00025, *player, 2, glm::vec2(1.0 / 2.0));
 
@@ -283,6 +295,12 @@ void Scene::jumpPlayer(bool accel)
 }
 Scene::~Scene()
 {
+	cout << "Scene deleted" << endl;
 	delete(skyBox);
-	delete(worldGroup);
+	delete(SoundEngine);
+	for each(Object * object in collidableObjects)
+		delete(object);
+	delete(buildingGram);
+	delete(genSphere);
+	delete(genCube);
 }

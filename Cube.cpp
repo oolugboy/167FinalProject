@@ -99,6 +99,7 @@ Cube::Cube(GLchar * textureName)
 
 Cube::~Cube()
 {
+	cout << "deleting cube" << endl;
 	// Delete previously generated buffers. Note that forgetting to do this can waste GPU memory in a 
 	// large project! This could crash the graphics driver due to memory leaks, or slow down application performance!
 	glDeleteVertexArrays(1, &VAO);

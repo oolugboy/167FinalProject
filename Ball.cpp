@@ -36,6 +36,12 @@ Ball::Ball(bool isPlayer, glm::vec3 position, MatrixTransform * matrixT)
 	this->matrixT->transformMatrix = glm::translate(glm::mat4(1.0f), position);
 }
 
+
+Ball::~Ball() {
+	cout << "delete ball" << endl;
+	delete(matrixT);
+}
+
 void Ball::jump(bool accel)
 {
 	//cout << " We are jumping " << endl;
@@ -164,11 +170,11 @@ void Ball::updateVelocity(float sec)
 	glm::vec3 turnForce = glm::vec3(0.0f);
 	glm::vec3 turnVelocity = glm::vec3(0.0f);
 	if (turn == 0) { // turn left
-		turnForce = (-0.001000f * ballX) / mass;
+		turnForce = (-0.0002000f * ballX) / mass;
 		turnVelocity = (sec* turnForce / mass);
 	}
 	else if (turn == 2) { //turn right
-		turnForce = (0.00100f * ballX) / mass;
+		turnForce = (0.000200f * ballX) / mass;
 		turnVelocity = (sec* turnForce / mass);
 	}
 	if (turn != 1)

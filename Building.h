@@ -27,6 +27,7 @@ class Building : public Object
 {
 public:
 	Building(bool isPlayer, glm::vec3 position, MatrixTransform * matrixT);
+	~Building();
 	glm::vec3 initPos;
 	glm::vec3 prevPos;	
 	glm::vec3 direction;

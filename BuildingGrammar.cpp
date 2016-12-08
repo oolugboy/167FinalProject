@@ -140,6 +140,22 @@ BuildingGrammar::BuildingGrammar()
 //Deconstructor
 BuildingGrammar::~BuildingGrammar()
 {
+	cout << "delete building grammar" << endl;
+	delete(cube1);
+	delete(cube2);
+	delete(cube3);
+	delete(pyramid1);
+	delete(pyramid2);
+	delete(pyramid3);
+	delete(slantedTop1);
+	delete(slantedTop2);
+	delete(slantedTop3);
+	delete(trapezoid1);
+	delete(trapezoid2);
+	delete(trapezoid3);
+	delete(pinchedCube1);
+	delete(pinchedCube2);
+	delete(pinchedCube3);
 }
 
 /*
