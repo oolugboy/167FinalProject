@@ -10,6 +10,8 @@ float defaultAccel = 0.01f;
 /*~~ SHAPE GRAMMAR TESTING*/
 MatrixTransform * buildingTrans;
 /*~~ END */
+vector <const GLchar * > playSkyFaces;
+vector <const GLchar * > aISkyFaces;
 
 /*AUDIO*/
 ISoundEngine *SoundEngine = createIrrKlangDevice();
@@ -18,8 +20,27 @@ ISoundEngine *SoundEngine = createIrrKlangDevice();
 
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 {
-	//Play song on start up
-	SoundEngine->play2D("audio/kirby.mp3", GL_TRUE);
+	playSkyFaces.resize(6);
+	playSkyFaces[0] = "textures/playerSkyBox/perdicus_rt.ppm";
+	playSkyFaces[1] = "textures/playerSkyBox/perdicus_lf.ppm";
+	playSkyFaces[2] = "textures/playerSkyBox/perdicus_up.ppm";
+	playSkyFaces[3] = "textures/playerSkyBox/perdicus_dn.ppm";
+	playSkyFaces[4] = "textures/playerSkyBox/perdicus_bk.ppm";
+	playSkyFaces[5] = "textures/playerSkyBox/perdicus_ft.ppm";
+
+	Ball::playerTexID = SkyBox::loadCubeMap(playSkyFaces);
+
+	aISkyFaces.resize(6);
+	aISkyFaces[0] = "textures/aISkyBox/hell_rt.ppm";
+	aISkyFaces[1] = "textures/aISkyBox/hell_lf.ppm";
+	aISkyFaces[2] = "textures/aISkyBox/hell_up.ppm";
+	aISkyFaces[3] = "textures/aISkyBox/hell_dn.ppm";
+	aISkyFaces[4] = "textures/aISkyBox/hell_bk.ppm";
+	aISkyFaces[5] = "textures/aISkyBox/hell_ft.ppm";
+
+	/* Load the textures for the players*/
+	Ball::aITexID = SkyBox::loadCubeMap(aISkyFaces);
+
 	t = clock();
 	m_shaderProgram1 = shaderProgram1;
 	m_shaderProgram2 = shaderProgram2;
@@ -29,9 +50,8 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	/* The general relevant geometries */
 	genSphere = new Sphere(1.0f, false);
 	genCube = new Cube(true);
-
-
-	randomInitial(0); 
+	numAgents = 20;
+	randomInitial(1);
 }
 
 void Scene::randomInitial(int seed) {
@@ -44,8 +64,32 @@ void Scene::randomInitial(int seed) {
 	city = new City(world_grids);
 	BuildingGrammar * buildingGram = new BuildingGrammar();
 
-	if (seed >= 0) { srand(seed); }
+	if (seed >= 0) { srand(0); }
 	else { srand(time(NULL)); }
+
+	/* Set the initial position for the player */
+	playerBallTrans = new MatrixTransform();
+	player = new Ball(true, glm::vec3(0.0f, 1, 0.0f), playerBallTrans);
+	collidableObjects.push_back(player);
+	city->addObject(collidableObjects[0]->matrixT->transformMatrix);
+	collidableObjects[0]->matrixT->addChild(genCube);
+	collidableObjects[0]->matrixT->addChild(genSphere);
+	worldGroup->addChild(collidableObjects[0]);
+
+	Window::camera = new Camera(player);
+
+	/** random position for the aI's */
+	for (int i = 1; i < numAgents; i++)
+	{
+		float xpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
+		float zpos = ((rand() % 1000) / 500.0f - 1.0f) * (world_grids / 2) * 0.75f;
+		glm::vec3 trans = glm::vec3(xpos, 1.0f, zpos);
+		collidableObjects.push_back(new Ball(false, trans, new MatrixTransform()));
+		city->addObject(collidableObjects[i]->matrixT->transformMatrix);
+		collidableObjects[i]->matrixT->addChild(genCube);
+		collidableObjects[i]->matrixT->addChild(genSphere);
+		worldGroup->addChild(collidableObjects[i]);
+	}
 
 	initializeObjects();
 
@@ -74,7 +118,6 @@ void Scene::randomInitial(int seed) {
 			worldGroup->addChild(cube1);*/
 		}
 	}
-
 	worldGroup->addChild(city);
 }
 void Scene::draw()
@@ -94,10 +137,10 @@ void Scene::draw()
 	/* Test the collision detection */
 	if (isCollide())
 		cout << " Collision detected " << endl;
-
-	//cout << " It took this " << t << " clicks to render the robots in this frame " << endl;
+}
+void Scene::update()
+{
 	worldGroup->update();
-
 }
 void Scene::changePlayerDirection(float direction, bool posAccel)
 {
@@ -136,40 +179,23 @@ glm::vec3 Scene::trackBallMapping(glm::vec3 point, int width, int height)
 	return res;
 }
 /* Reset the acceleration */
-void Scene::acceleratePlayer(bool posAccel)
+void Scene::acceleratePlayers(bool posAccel)
 {
 	player->accelerate(posAccel);
-	aI->accelerate(false);
+	for (int i = 1; i < numAgents; i++)
+	{
+		bool aIAccel = (rand() % 2);
+		if (collidableObjects[i]->movable == true)
+		{
+			collidableObjects[i]->accelerate(aIAccel);
+			collidableObjects[i]->turn = rand() % 3;
+		}
+	}
 }
+
 void Scene::initializeObjects()
 {
-	boundBoxATrans = new MatrixTransform();
-	boundBoxBTrans = new MatrixTransform();
-	playerBallTrans = new MatrixTransform();
-	ballBTrans = new MatrixTransform();
 
-	player = new Ball(true, glm::vec3(0.0f, 1, 0.0f), playerBallTrans);
-	Window::camera->player = player;
-
-	aI = new Ball(false, glm::vec3(0.0f, 1.0f, -25.0f), ballBTrans);
-
-	/* Set the initial position for the object */
-
-	city->addObject(ballBTrans->transformMatrix);
-	city->addObject(playerBallTrans->transformMatrix);
-
-	/* add all the objects to the vector */
-	collidableObjects.push_back(player);
-	collidableObjects.push_back(aI);
-
-	worldGroup->addChild(player);
-	worldGroup->addChild(aI);
-
-	playerBallTrans->addChild(genCube);
-	playerBallTrans->addChild(genSphere);
-
-	ballBTrans->addChild(genCube);
-	ballBTrans->addChild(genSphere);
 }
 bool Scene::isCollide()
 {
@@ -193,18 +219,17 @@ bool Scene::isCollide()
 
 				}
 				//collidableObjects[j]->handleCollision(collidableObjects[i]);
-				//Play "bounce" sound effect on collision with player
-				if(collidableObjects[i] == player || collidableObjects[j] == player)
+				if (collidableObjects[i] == player || collidableObjects[j] == player)
 					SoundEngine->play2D("audio/bounce.wav", GL_FALSE);
 			}
 		}
-	}	
-	return player->collidesWith(aI);
+	}
+	return false;
 }
 void Scene::zoom(float scrollOffset, glm::vec3 & cam_pos)
 {
 	float fact = 0.0f;
-	if (scrollOffset > 0){
+	if (scrollOffset > 0) {
 		fact = 1.5f;
 	}
 	if (scrollOffset < 0) {

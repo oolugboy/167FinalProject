@@ -30,6 +30,8 @@ public:
 	void update();
 	virtual bool collidesWith(Object * other) = 0;
 	virtual void handleCollision(Object * other) = 0;
+	virtual void accelerate(bool posAccel) = 0;
+	int turn;
 	glm::mat4 modelView;
 	MatrixTransform *  matrixT;
 	// These variables are needed for the shader program
