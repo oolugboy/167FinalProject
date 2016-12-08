@@ -12,6 +12,7 @@ vector <const GLchar * > playSkyFaces;
 vector <const GLchar * > aISkyFaces;
 /*AUDIO*/
 ISoundEngine *SoundEngine = createIrrKlangDevice();
+bool can_fall = true;
 /*END*/
 
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
@@ -140,9 +141,31 @@ void Scene::draw()
 	if (isCollide())
 		cout << " Collision detected " << endl;
 }
+void Scene::outOfBounds()
+{
+	int size = collidableObjects.size();
+	for (int i = 0; i < size; i++)
+	{
+		
+		if (abs(collidableObjects[i]->currPos.x) > world_grids/2 ||
+			abs(collidableObjects[i]->currPos.z) > world_grids/2)
+			collidableObjects[i]->inAir = true;
+
+		//if (collidableObjects[i] == player) {
+		//	printf("|(%f,%f)| %d, %d\n", abs(collidableObjects[i]->currPos.x), abs(collidableObjects[i]->currPos.z), player->inAir, collidableObjects[i]->inAir);
+		//}
+	}
+}
 void Scene::update()
 {
+	outOfBounds();
 	worldGroup->update();
+	
+	if (player->inAir && can_fall == true) {
+		can_fall = false;
+		SoundEngine->play2D("audio/scream.wav", GL_FALSE);
+	}
+
 	//Particles->Update(0.00025, *player, 2, glm::vec2(1.0 / 2.0));
 
 	//for (int i = 0; i <= collidableObjects.size(); i++) {

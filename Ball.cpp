@@ -57,7 +57,6 @@ void Ball::accelerate(bool posAccel)
 	glm::vec3 frictionalForce = (0.000001f * (-1.0f * direction));
 	glm::vec3 gravitationalForce = glm::vec3(0.0f, 0.0f, 0.0f);
 
-
 	if (getMag(initVelocity) == 0.0f)
 	{
 		frictionalForce = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -74,18 +73,6 @@ void Ball::accelerate(bool posAccel)
 		acceleration = ((mass * acceleration) + frictionalForce + gravitationalForce) / mass;
 	}
 
-	/* If the ball is in the air */
-	if (inAir)
-	{
-		gravitationalForce = (-0.003f * glm::vec3(0.0f, 1.0f, 0.0f));
-		frictionalForce = forwardForce = glm::vec3(0.0f, 0.0f, 0.0f);
-		if (currPos.y < 0.01f)/* Offset from the ground */
-		{
-			/* Glide the ball back to the ground*/
-			//forwardForce = 
-		}
-	}
-
 	/** Update the direction of the acceleration */
 	float a_mag = getMag(acceleration);
 	acceleration = a_mag * direction;
@@ -94,8 +81,11 @@ void Ball::accelerate(bool posAccel)
 	
 	//acceleration = (turn != 1) ? acceleration * 0.5f : acceleration;
 	acceleration = (turn != 1) ? acceleration  : acceleration;
-	/*cout << " The acceleration is ";
-	printVector(acceleration); */
+	if (isPlayer)
+	{
+		cout << " The just done acceleration is ";
+		printVector(acceleration);
+	}
 }
 void Ball::update()
 {
@@ -111,9 +101,14 @@ void Ball::update()
 		}
 		t = temp;
 	}
+
+		if (isPlayer)
+		{
+			cout << "FALL" << endl;
+			cout << " The currPos is ";
+			printVector(currPos);
+		}		
 }
-
-
 void Ball::draw(glm::mat4 cMatrix) {
 	glUseProgram(Window::agentShaderProgram);
 	if (isPlayer)
@@ -132,6 +127,8 @@ void Ball::updateVelocity(float sec)
 	{
 		glm::vec3 diff = currPos - prevPos;
 		direction = glm::normalize(glm::vec3(diff.x, 0.0f, diff.z));
+		if (inAir)
+			direction = glm::normalize(glm::vec3(diff.x, diff.y, diff.z));
 
 	/*	cout << " The direction is ";
 		printVector(direction); */
@@ -146,16 +143,22 @@ void Ball::updateVelocity(float sec)
 		//printVector(finalVelocity);		
 	}	
 	/*Update the velociy */
+	if (isPlayer)
+	{
+		printf("Begin of Calculation %d, (%f,%f,%f), |%f|, (%f,%f,%f), |%f|\n", inAir,
+			finalVelocity.x, finalVelocity.y, finalVelocity.z, getMag(finalVelocity),
+			initVelocity.x, initVelocity.y, initVelocity.z, getMag(initVelocity));
+	}
 	initVelocity = finalVelocity;
 
 
 	/* The stopping condition */
-	if (getMag(initVelocity) < 1.0 && getMag(acceleration) < 0.0001) {
+	/*if (getMag(initVelocity) < 0.5 && getMag(acceleration) < 0.0001) {
 		initVelocity = finalVelocity = acceleration = glm::vec3(0.0f);
-	}
-	else {
+	} */
+	//else {
 		finalVelocity = initVelocity + (acceleration * sec);
-	}
+	//}
 
 	/* For the turning */
 	glm::vec3 turnForce = glm::vec3(0.0f);
@@ -174,11 +177,18 @@ void Ball::updateVelocity(float sec)
 		finalVelocity = (finalVelocity + turnVelocity) * 0.70f;
 		//acceleration = (finalVelocity - initVelocity) / sec;
 	}
+	if (inAir)
+	{
+		finalVelocity = (finalVelocity + glm::vec3(0.0f, -0.005f, 0.0f));
+	}
 	turn = 1; //reset to no turn
 
 
 	if (isPlayer)
 	{
+		printf("End of Calculation %d (%f,%f,%f), |%f|, (%f,%f,%f), |%f|\n", inAir,
+			finalVelocity.x, finalVelocity.y, finalVelocity.z, getMag(finalVelocity),
+			initVelocity.x, initVelocity.y, initVelocity.z, getMag(initVelocity));
 		//cout << " The speed is " << getMag(finalVelocity) << endl;
 		//cout << " The finalVelocity  is ";
 		//printVector(finalVelocity);
@@ -205,7 +215,14 @@ void Ball::updateBoxVals()
 	yWidth = 2.0f * matrixT->transformMatrix[1][1];
 	zWidth = 2.0f * matrixT->transformMatrix[2][2];
 }
-
+bool Ball::outOfBounds()
+{
+	if (abs(this->currPos.x) > 50.0f)
+		return true;
+	if (abs(this->currPos.z > 50.0f))
+		return true;
+	return false;
+}
 void Ball::checkMaxSpeed()
 {
 	if (getMag(finalVelocity) > maxSpeed)
@@ -219,7 +236,8 @@ float Ball::getMag(glm::vec3 dir)
 }
 void Ball::moveAgent(float sec)
 {
-	glm::vec3 diff =(initVelocity * sec) + (0.50f * acceleration * pow(sec, 2));
+	glm::vec3 diff =(initVelocity * sec) + (0.50f * acceleration * pow(sec, 2));	
+	
 	/*cout << " The diff is ";
 	printVector(diff);*/
 	matrixT->transformMatrix = glm::translate(glm::mat4(1.0f), diff) * matrixT->transformMatrix;

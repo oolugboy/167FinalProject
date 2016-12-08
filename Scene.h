@@ -80,7 +80,7 @@ class Scene
 		clock_t t;
 		void update();
 		float numAgents;
-
+		void outOfBounds();
 		bool playerLosing;
 		int world_grids;
 };

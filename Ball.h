@@ -54,7 +54,7 @@ public:
 	static GLuint playerTexID;
 	static GLuint aITexID;
 	void jump(bool accel);
-	bool inAir;	
 	int collideAm;
+	bool outOfBounds();
 };
 #endif

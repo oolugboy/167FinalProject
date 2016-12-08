@@ -31,8 +31,13 @@ glm::mat4 Camera::getV()
 	case 2: //follow objects
 		player_pos = glm::vec3(player->matrixT->transformMatrix[3]);
 		direction = glm::normalize(player->direction);
-		pos = -12.0f * direction + player_pos;
-		pos.y = 5.0f;
+		if (player->inAir) {
+			pos = 12.0f * direction + player_pos;
+		}
+		else {
+			pos = -12.0f * direction + player_pos;
+			pos.y = 5.0f;
+		}
 		V = glm::lookAt(pos, player_pos, cam_up);
 		break;
 
