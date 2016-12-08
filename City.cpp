@@ -21,6 +21,14 @@ void City::initial() {
 		}
 		this->occupation.push_back(horizonal);
 	}
+
+	int middle1 = (world_intervals / 2 - world_intervals / 8);
+	int middle2 = (world_intervals / 2 + world_intervals / 8);
+	for (int x = middle1; x < middle2; x++)
+	{
+		for (int y = middle1; y < middle2; y++)
+			occupation[x][y] = 0;
+	}
 	computePoints();
 	toWorld = glm::mat4(1.0f);
 

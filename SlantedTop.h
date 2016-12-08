@@ -37,9 +37,9 @@ public:
 		glm::vec3(-1.0f, -1.0f, -1.0f),
 
 		//Back
-		glm::vec3(1.0f, 1.0f,  1.0f),
-		glm::vec3(1.0f, -1.0f,  1.0f),
 		glm::vec3(-1.0f,  -1.0f,  1.0f),
+		glm::vec3(1.0f, -1.0f,  1.0f),
+		glm::vec3(1.0f, 1.0f,  1.0f),
 
 		//Right
 		glm::vec3(1.0f, -1.0f, -1.0f),
