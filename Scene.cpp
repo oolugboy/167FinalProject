@@ -173,6 +173,7 @@ void Scene::initializeObjects()
 }
 bool Scene::isCollide()
 {
+
 	int size = collidableObjects.size();
 	for (int i = 0; i < size; i++)
 	{
@@ -192,6 +193,8 @@ bool Scene::isCollide()
 
 				}
 				//collidableObjects[j]->handleCollision(collidableObjects[i]);
+				if(collidableObjects[i] == player || collidableObjects[j] == player)
+					SoundEngine->play2D("audio/bounce.wav", GL_FALSE);
 			}
 		}
 	}	
