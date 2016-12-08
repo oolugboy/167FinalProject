@@ -168,7 +168,8 @@ void Scene::update()
 
 	//Particles->Update(0.00025, *player, 2, glm::vec2(1.0 / 2.0));
 
-	//for (int i = 0; i <= collidableObjects.size(); i++) {
+	//printf("collidableObject size: %d\n", collidableObjects.size());
+	//for (int i = 0; i < collidableObjects.size(); i++) {
 	//	bool isLose = false;
 	//	if (collidableObjects[i]->currPos.x > world_grids / 2 || collidableObjects[i]->currPos.x < -world_grids / 2) {
 	//		isLose = true;
@@ -177,8 +178,10 @@ void Scene::update()
 	//		isLose = true;
 	//	}
 
-	//	//worldGroup->removeChild(collidableObjects[i]);
-	//	//collidableObjects.erase(collidableObjects.begin() + i);
+	//	printf("%d", i);
+
+	//	worldGroup->removeChild(collidableObjects[i]);
+	//	collidableObjects.erase(collidableObjects.begin() + i);
 	//}
 }
 void Scene::changePlayerDirection(float direction, bool posAccel)

@@ -91,7 +91,7 @@ void Pyramid::render()
 	//Using a texture
 	else
 	{
-		glUniform1i(glGetUniformLocation(Window::shaderProgram2, "isTexture"), 1);
+		glUniform1i(glGetUniformLocation(Window::shaderProgram2, "isTexture"), Window::isTexture);
 		glActiveTexture(GL_TEXTURE0);
 		glUniform1i(glGetUniformLocation(Window::shaderProgram2, "tile"), 0);
 		glBindTexture(GL_TEXTURE_2D, texture);
