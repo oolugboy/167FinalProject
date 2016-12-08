@@ -20,12 +20,13 @@ class Cube : public Geode
 {
 public:
 	Cube(bool wired);
+	Cube(GLchar * texture);
 	~Cube();	
 	void spin(float);
 	void render();
 	bool inBound() { return true; }
 
-	GLuint vertNum = 8, normNum = 8;
+	GLuint vertNum = 36, texNum = 36;
 	// Define the coordinates and indices needed to draw the cube. Note that it is not necessary
 	// to use a 2-dimensional array, since the layout in memory is the same as a 1-dimensional array.
 	// This just looks nicer since it's easy to tell what coordinates/indices belong where.
@@ -51,43 +52,65 @@ public:
 		leftFaceNorm,
 		rightFaceNorm
 	};
-	const glm::vec3 vertices[8] = {
-		// "Front" vertices
-		glm::vec3(-1.0f, -1.0f,  1.0f), glm::vec3(1.0f, -1.0f,  1.0f), glm::vec3(1.0f,  1.0f,  1.0f), glm::vec3(-1.0f,  1.0f,  1.0f),
-		// "Back" vertices
-		glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec3(1.0f,  1.0f, -1.0f), glm::vec3(-1.0f,  1.0f, -1.0f)
-	};
-	const glm::vec3 normals[8] = {
-		// The front vertices
-		glm::normalize((faceNormals[bottomFaceNorm] + faceNormals[leftFaceNorm] + faceNormals[frontFaceNorm])),
-		glm::normalize((faceNormals[bottomFaceNorm] + faceNormals[rightFaceNorm] + faceNormals[frontFaceNorm])),
-		glm::normalize((faceNormals[topFaceNorm] + faceNormals[rightFaceNorm] + faceNormals[frontFaceNorm])),
-		glm::normalize((faceNormals[topFaceNorm] + faceNormals[leftFaceNorm] + faceNormals[frontFaceNorm])),
 
-		// The back vertices
-		glm::normalize((faceNormals[bottomFaceNorm] + faceNormals[leftFaceNorm] + faceNormals[backFaceNorm])),
-		glm::normalize((faceNormals[bottomFaceNorm] + faceNormals[rightFaceNorm] + faceNormals[backFaceNorm])),
-		glm::normalize((faceNormals[topFaceNorm] + faceNormals[rightFaceNorm] + faceNormals[backFaceNorm])),
-		glm::normalize((faceNormals[topFaceNorm] + faceNormals[leftFaceNorm] + faceNormals[backFaceNorm]))
+	const glm::vec3 vertices[36] = {
+		//Front
+		glm::vec3(-1.0f, -1.0f, -1.0f),
+		glm::vec3(-1.0f,  1.0f, -1.0f),
+		glm::vec3(1.0f,  1.0f, -1.0f),
+		glm::vec3(1.0f,  1.0f, -1.0f),
+		glm::vec3(1.0f, -1.0f, -1.0f),
+		glm::vec3(-1.0f, -1.0f, -1.0f),
+
+		//Back
+		glm::vec3(1.0f, -1.0f,  1.0f),
+		glm::vec3(1.0f, 1.0f,  1.0f),
+		glm::vec3(-1.0f,  1.0f,  1.0f),
+		glm::vec3(-1.0f,  1.0f,  1.0f),
+		glm::vec3(-1.0f,  -1.0f,  1.0f),
+		glm::vec3(1.0f, -1.0f,  1.0f),
+
+		//Left
+		glm::vec3(-1.0f, -1.0f, 1.0f),
+		glm::vec3(-1.0f, 1.0f,  1.0f),
+		glm::vec3(-1.0f,  1.0f,  -1.0f),
+		glm::vec3(-1.0f,  1.0f,  -1.0f),
+		glm::vec3(-1.0f,  -1.0f, -1.0f),
+		glm::vec3(-1.0f, -1.0f, 1.0f),
+
+		//Right
+		glm::vec3(1.0f, -1.0f, -1.0f),
+		glm::vec3(1.0f,  1.0f, -1.0f),
+		glm::vec3(1.0f,  1.0f,  1.0f),
+		glm::vec3(1.0f,  1.0f,  1.0f),
+		glm::vec3(1.0f, -1.0f,  1.0f),
+		glm::vec3(1.0f, -1.0f, -1.0f),
+
+		//Bottom
+		glm::vec3(-1.0f, -1.0f, -1.0f),
+		glm::vec3(1.0f, -1.0f, -1.0f),
+		glm::vec3(1.0f, -1.0f,  1.0f),
+		glm::vec3(1.0f, -1.0f,  1.0f),
+		glm::vec3(-1.0f, -1.0f,  1.0f),
+		glm::vec3(-1.0f, -1.0f, -1.0f),
+
+		//Top
+		glm::vec3(1.0f,  1.0f,  1.0f),
+		glm::vec3(1.0f,  1.0f, -1.0f),
+		glm::vec3(-1.0f,  1.0f, -1.0f),
+		glm::vec3(-1.0f,  1.0f, -1.0f),
+		glm::vec3(-1.0f,  1.0f,  1.0f),
+		glm::vec3(1.0f,  1.0f,  1.0f)
 	};
 	glm::vec4 axisBounds[3];
-
-	// Note that GL_QUADS is deprecated in modern OpenGL (and removed from OSX systems).
-	// This is why we need to draw each face as 2 triangles instead of 1 quadrilateral
-	const GLuint indices[6][6] = {
-		// Front face
-		{0, 1, 2, 2, 3, 0},
-		// Top face
-		{1, 5, 6, 6, 2, 1},
-		// Back face
-		{7, 6, 5, 5, 4, 7},
-		// Bottom face
-		{4, 0, 3, 3, 7, 4},
-		// Left face
-		{4, 5, 1, 1, 0, 4},
-		// Right face
-		{3, 2, 6, 6, 7, 3}
-	};	
+	const glm::vec2 texture_v[36] = {
+		glm::vec2(0.0f,0.0f), glm::vec2(0.0f,1.0f), glm::vec2(1.0f,1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f,0.0f), glm::vec2(0.0f,0.0f),
+		glm::vec2(0.0f,0.0f), glm::vec2(0.0f,1.0f), glm::vec2(1.0f,1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f,0.0f), glm::vec2(0.0f,0.0f),
+		glm::vec2(0.0f,0.0f), glm::vec2(0.0f,1.0f), glm::vec2(1.0f,1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f,0.0f), glm::vec2(0.0f,0.0f),
+		glm::vec2(0.0f,0.0f), glm::vec2(0.0f,1.0f), glm::vec2(1.0f,1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f,0.0f), glm::vec2(0.0f,0.0f),
+		glm::vec2(0.0f,0.0f), glm::vec2(0.0f,1.0f), glm::vec2(1.0f,1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f,0.0f), glm::vec2(0.0f,0.0f),
+		glm::vec2(0.0f,0.0f), glm::vec2(0.0f,1.0f), glm::vec2(1.0f,1.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f,0.0f), glm::vec2(0.0f,0.0f),
+	};
 };
 
 #endif

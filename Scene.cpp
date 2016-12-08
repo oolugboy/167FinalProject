@@ -7,11 +7,14 @@ float PI = 3.14159265;
 float modder = pow(10, 9) + 7;
 float defaultAccel = 0.01f;
 
+
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 {
 	Shader shader("shader/particle.vert", "shader/particle.frag");
 	Particles = new ParticleGenerator(shader, 500);
 
+	//Play song on start up
+	SoundEngine->play2D("audio/kirby.mp3", GL_TRUE);
 	t = clock();
 	m_shaderProgram1 = shaderProgram1;
 	m_shaderProgram2 = shaderProgram2;
@@ -57,13 +60,13 @@ void Scene::randomInitial(int seed) {
 
 		if (city->addObject(cMatrix)) {
 			//TODO: buildings are too height, cannot see anything for debug, might need a max hieght, and make the height depend on scale?
-			//buildingTrans = buildingGram->Build(glm::vec3(xpos, 0.0f, zpos), glm::vec3(size), rotAngle);
-			//worldGroup->addChild(buildingTrans);
-			MatrixTransform* cube1 = new MatrixTransform();
+			buildingTrans = buildingGram->Build(glm::vec3(xpos, 0.0f, zpos), glm::vec3(size), rotAngle);
+			worldGroup->addChild(buildingTrans);
+			/*MatrixTransform* cube1 = new MatrixTransform();
 			glm::mat4 cube1_matrix = cube1->transformMatrix * translate * scale * rot;
 			cube1->transformMatrix = cube1_matrix;
 			cube1->addChild(genCube);
-			worldGroup->addChild(cube1);
+			worldGroup->addChild(cube1);*/
 		}
 	}
 
@@ -168,6 +171,7 @@ void Scene::initializeObjects()
 }
 bool Scene::isCollide()
 {
+
 	int size = collidableObjects.size();
 	for (int i = 0; i < size; i++)
 	{
@@ -187,6 +191,8 @@ bool Scene::isCollide()
 
 				}
 				//collidableObjects[j]->handleCollision(collidableObjects[i]);
+				if(collidableObjects[i] == player || collidableObjects[j] == player)
+					SoundEngine->play2D("audio/bounce.wav", GL_FALSE);
 			}
 		}
 	}	

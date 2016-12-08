@@ -18,6 +18,7 @@
 #include <limits>
 #include <string>
 #include "Node.h"
+#include <SOIL.h>
 
 using namespace std;
 class Geode : public Node
@@ -26,13 +27,16 @@ public:
 	Geode();
 	void draw(glm::mat4 cMatrix);
 	void update();
+	GLuint loadTexture(GLchar *);
 	virtual void render() = 0;
 	virtual bool inBound() = 0;	
 	glm::mat4 modelView;
 	glm::mat4 toWorld;
 	bool wired;
+	bool isTexture;
+	GLuint texture;
 	// These variables are needed for the shader program
-	GLuint VBO, VAO, EBO, NBO;
+	GLuint VBO, VAO, TBO, EBO, NBO;
 	GLuint uProjection, uModelview;
 	glm::vec3 currPos;
 	float scaleMult;

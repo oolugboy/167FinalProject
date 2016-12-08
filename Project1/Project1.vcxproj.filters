@@ -160,5 +160,11 @@
     <None Include="..\shader2.vert" />
     <None Include="packages.config" />
     <None Include="ClassDiagram.cd" />
+    <None Include="..\shader3.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="..\shader3.vert">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

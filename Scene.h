@@ -32,6 +32,10 @@
 #include "Camera.h"
 #include "Particle.h"
 
+//Sound effects
+#include <irrKlang.h>
+using namespace irrklang;
+
 //Building Grammar
 #include "BuildingGrammar.h"
 
