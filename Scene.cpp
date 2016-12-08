@@ -7,14 +7,10 @@ float PI = 3.14159265;
 float modder = pow(10, 9) + 7;
 float defaultAccel = 0.01f;
 
-/*~~ SHAPE GRAMMAR TESTING*/
-MatrixTransform * buildingTrans;
-/*~~ END */
-
-
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 {
-
+	Shader shader("shader/particle.vert", "shader/particle.frag");
+	Particles = new ParticleGenerator(shader, 500);
 
 	t = clock();
 	m_shaderProgram1 = shaderProgram1;
@@ -85,6 +81,7 @@ void Scene::draw()
 	//Since skybox is fix size, so scale down the world to make the world looks bigger
 	//worldGroup->draw(worldMatTrans);
 	worldGroup->draw(glm::mat4(1.0f));
+	Particles->Draw();
 
 
 	/* Test the collision detection */
@@ -93,6 +90,8 @@ void Scene::draw()
 
 	//cout << " It took this " << t << " clicks to render the robots in this frame " << endl;
 	worldGroup->update();
+	Particles->Update(0.00025, *player, 2, glm::vec2(1.0 / 2.0));
+
 
 }
 void Scene::changePlayerDirection(float direction, bool posAccel)

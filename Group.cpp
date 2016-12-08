@@ -43,7 +43,7 @@ void Group::draw(glm::mat4 cMatrix)
 	list< Node *>::const_iterator lit = children.begin();
 	list< Node *>::const_iterator len = children.end();
 
-	for (; lit != len; lit++)
+	for (; lit != len && !children.empty(); lit++)
 	{
 		//cout << " about to call the child to draw " << endl;
 		Node * curr = (*lit);

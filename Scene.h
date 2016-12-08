@@ -30,6 +30,7 @@
 #include <string>
 #include <time.h>
 #include "Camera.h"
+#include "Particle.h"
 
 //Building Grammar
 #include "BuildingGrammar.h"
@@ -60,11 +61,10 @@ class Scene
 		glm::vec3 aITrans;
 		glm::mat4 worldMatTrans;
 		City* city;
+		ParticleGenerator *Particles;
 		Ball * player;
 		Ball * aI;
-		void buildGraph();
 		void initializeObjects();
-		void moveBalls();	
 		bool isCollide();
 		void changePlayerDirection(float direction, bool posAccel);
 		Sphere * genSphere;

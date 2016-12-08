@@ -124,7 +124,7 @@ void Window::resize_callback(GLFWwindow* window, int width, int height)
 		cout << " The projection is being set " << endl;
 		P = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
 		//V = glm::lookAt(cam_pos, cam_look_at, cam_up);
-		V = camera->getV();
+		V = Window::camera->getV();
 	}
 }
 

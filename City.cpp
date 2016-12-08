@@ -73,31 +73,6 @@ GLuint City::generateVAO() {
 
 bool City::addObject(glm::mat4 drawMatrix) {
 
-	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//occupationShader->Use();
-	//glUniformMatrix4fv(glGetUniformLocation(occupationShader->Program, "model"), 1, GL_FALSE, glm::value_ptr(toWorld));
-	//glUniformMatrix4fv(glGetUniformLocation(occupationShader->Program, "view"), 1, GL_FALSE, glm::value_ptr(Window::V));
-	//glUniformMatrix4fv(glGetUniformLocation(occupationShader->Program, "projection"), 1, GL_FALSE, glm::value_ptr(Window::P));
-
-	//glUniform1i(glGetUniformLocation(occupationShader->Program, "code"), 1);
-
-	//object->draw(drawMatrix);
-
-	//glm::mat4 pc = Window::P * Window::V;
-	//unsigned char res[4];
-	//for (int z = 0; z < world_intervals; z++) {
-	//	for (int x = 0; x < world_intervals; z++) {
-	//		glm::vec3 position = getPosition(x, z);
-	//		glm::vec4 p = pc * glm::vec4(position, 1.0);
-	//		float xpos = p.x / p.w;
-	//		float ypos = p.y / p.w;
-	//		printf("(x,z) = (%d,%d) = (%f,%f)\n", x, z, xpos, ypos);
-	//	}
-	//}
-	//glReadPixels(xpos, Window::height - ypos, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &res);
-	//std::cout << "Select control point (" << (unsigned int)res[0] << "," << (unsigned int)res[1] << "," << (unsigned int)res[2] << "," << (unsigned int)res[3] << ")" << std::endl;
-
 	glm::vec3 temp_cube_vertices[4];
 	for (int i = 0; i < 4; i++) {
 		glm::vec4 new_point = drawMatrix * glm::vec4(cube_vertices[i], 1.0);
@@ -321,29 +296,6 @@ void City::draw(glm::mat4 cMatrix) {
 	//	drawCurves(cMatrix);
 	//}
 }
-
-//void City::draw(Shader shader)
-//{
-//	glm::mat4 modelview = Window::V * toWorld;
-//
-//	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "modelview"), 1, GL_FALSE, glm::value_ptr(modelview));
-//	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(Window::P));
-//	glBindVertexArray(VAO);
-//	glActiveTexture(GL_TEXTURE0);
-//	glUniform1i(glGetUniformLocation(shader.Program, "tile"), 0);
-//	glBindTexture(GL_TEXTURE_2D, texture);
-//
-//	//glLineWidth(3.0f);
-//	//glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
-//	//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-//	//glPointSize(10.0f);
-//	//glDrawArrays(GL_POINTS, 0, vertices.size());
-//	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-//	
-//	//glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
-//
-//	glBindVertexArray(0);
-//}
 
 
 void City::drawCurves(Shader shader)
