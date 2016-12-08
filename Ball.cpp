@@ -1,8 +1,6 @@
 #include "Ball.h"
 #include <cmath>
 
-using namespace std;
-
 GLuint Ball::playerTexID;
 GLuint Ball:: aITexID;
 Ball::Ball(bool isPlayer, glm::vec3 position, MatrixTransform * matrixT)

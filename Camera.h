@@ -17,8 +17,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Ball.h"
 
-
-using namespace std;
 class Camera
 {
 public:
@@ -31,7 +29,7 @@ public:
 	glm::vec3 cam_look_at;
 	glm::vec3 cam_up;
 
-	int camera_mode = 0;
-	Ball * player;
+	Ball* player;
+	int camera_mode;
 };
 #endif

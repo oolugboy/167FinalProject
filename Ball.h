@@ -23,7 +23,6 @@
 #include <SOIL.h>
 #include <cmath>
 
-using namespace std;
 class Ball : public Object
 {
 public:

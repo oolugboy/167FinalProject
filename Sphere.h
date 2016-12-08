@@ -17,8 +17,9 @@
 #include <cmath>
 #include <limits>
 #include "Geode.h"
-
+//#include "Camera.h"
 using namespace std;
+class Camera;
 class Sphere : public Geode
 {
 public:
