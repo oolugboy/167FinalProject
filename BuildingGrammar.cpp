@@ -69,6 +69,11 @@ const int FIXED_CHANCE_4 = 25;
 const int FIXED_CHANCE_5 = 25;
 const int FIXED_CHANCE_6 = 25;
 
+//Cube Chances
+const int CUBE_CHANCE_1 = 30;
+const int CUBE_CHANCE_2 = 30;
+const int CUBE_CHANCE_3 = 40;
+
 //Set 1 : Symbol B
 int CHANCE_0M;
 int CHANCE_1M;
@@ -86,10 +91,25 @@ string gram_str;	//Grammar String
 
 Sphere * sphere;
 Cube * cube;
+Cube * cube1;
+Cube * cube2;
+Cube * cube3;
 Pyramid * pyramid;
+Pyramid * pyramid1;
+Pyramid * pyramid2;
+Pyramid * pyramid3;
 SlantedTop * slantedTop;
+SlantedTop * slantedTop1;
+SlantedTop * slantedTop2;
+SlantedTop * slantedTop3;
 Trapezoid * trapezoid;
+Trapezoid * trapezoid1;
+Trapezoid * trapezoid2;
+Trapezoid * trapezoid3;
 PinchedCube * pinchedCube;
+PinchedCube * pinchedCube1;
+PinchedCube * pinchedCube2;
+PinchedCube * pinchedCube3;
 
 int height_counter = 0;
 
@@ -102,12 +122,21 @@ BuildingGrammar::BuildingGrammar()
 	//Initialize Our building shapes
 	//WARNING NEED TO MOVE THIS ELSEWHERE SO WE DON'T RUN OUT OF MEMORY
 	sphere = new Sphere(2, false);
-	cube = new Cube("textures/building_glass.jpg");
-	//cube = new Cube(false);
-	pyramid = new Pyramid("textures/container.jpg");
-	slantedTop = new SlantedTop("textures/container.jpg");
-	trapezoid = new Trapezoid("textures/container.jpg");
-	pinchedCube = new PinchedCube("textures/container.jpg");
+	cube1 = new Cube("textures/building1.jpg");
+	cube2 = new Cube("textures/building2.jpg");
+	cube3 = new Cube("textures/building3.jpg");
+	pyramid1 = new Pyramid("textures/building1.jpg");
+	pyramid2 = new Pyramid("textures/building2.jpg");
+	pyramid3 = new Pyramid("textures/building3.jpg");
+	slantedTop1 = new SlantedTop("textures/building1.jpg");
+	slantedTop2 = new SlantedTop("textures/building2.jpg");
+	slantedTop3 = new SlantedTop("textures/building3.jpg");
+	trapezoid1 = new Trapezoid("textures/building1.jpg");
+	trapezoid2 = new Trapezoid("textures/building2.jpg");
+	trapezoid3 = new Trapezoid("textures/building3.jpg");
+	pinchedCube1 = new PinchedCube("textures/building1.jpg");
+	pinchedCube2 = new PinchedCube("textures/building2.jpg");
+	pinchedCube3 = new PinchedCube("textures/building3.jpg");
 }
 
 //Deconstructor
@@ -140,6 +169,31 @@ MatrixTransform * BuildingGrammar::Build(glm::vec3 position, glm::vec3 scale, fl
 
 	pos.y = scl.y;
 
+	int cube_type = rand() % 100 + 1;
+	if (cube_type - (CUBE_CHANCE_1) <= 0)
+	{
+		cube = cube1;
+		pyramid = pyramid1;
+		trapezoid = trapezoid1;
+		pinchedCube = pinchedCube1;
+		slantedTop = slantedTop1;
+	}
+	else if (cube_type - (CUBE_CHANCE_1 + CUBE_CHANCE_2) <= 0)
+	{
+		cube = cube2;
+		pyramid = pyramid2;
+		trapezoid = trapezoid2;
+		pinchedCube = pinchedCube2;
+		slantedTop = slantedTop2;
+	}
+	else if (cube_type - (CUBE_CHANCE_1 + CUBE_CHANCE_2 + CUBE_CHANCE_3) <= 0)
+	{
+		cube = cube3;
+		pyramid = pyramid3;
+		trapezoid = trapezoid3;
+		pinchedCube = pinchedCube3;
+		slantedTop = slantedTop3;
+	}
 	//------Build Grammar String that has no more paths
 
 	//Start with a replaceable bottom

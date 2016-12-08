@@ -72,22 +72,22 @@ public:
 
 		//Front
 		glm::vec3(-1.0f, -1.0f, -1.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f),
+		glm::vec3(0.0f, 2.0f, 0.0f),
 		glm::vec3(1.0f, -1.0f, -1.0f),
 
 		//Back
 		glm::vec3(1.0f, -1.0f, 1.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f),
+		glm::vec3(0.0f, 2.0f, 0.0f),
 		glm::vec3(-1.0f, -1.0f, 1.0f),
 
 		//Left
 		glm::vec3(-1.0f, -1.0f, 1.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f),
+		glm::vec3(0.0f, 2.0f, 0.0f),
 		glm::vec3(-1.0f, -1.0f, -1.0f),
 
 		//Right
 		glm::vec3(1.0f, -1.0f, -1.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f),
+		glm::vec3(0.0f, 2.0f, 0.0f),
 		glm::vec3(1.0f, -1.0f, 1.0f),
 
 		//Bottom
