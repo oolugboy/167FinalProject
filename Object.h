@@ -17,7 +17,7 @@
 #include <cmath>
 #include <limits>
 #include <string>
-#include "Node.h"
+#include "MatrixTransform.h"
 
 using namespace std;
 class Object : public Node
@@ -31,7 +31,7 @@ public:
 	virtual bool collidesWith(Object * other) = 0;
 	virtual void handleCollision(Object * other) = 0;
 	glm::mat4 modelView;
-	glm::mat4 toWorld;
+	MatrixTransform *  matrixT;
 	// These variables are needed for the shader program
 	GLuint VBO, VAO, EBO, NBO;
 	GLuint uProjection, uModelview;

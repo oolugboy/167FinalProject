@@ -27,10 +27,7 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	genCube = new Cube(true);
 
 
-	randomInitial(1);
-
-	aI->mass = 10000.0f;
-
+	randomInitial(1); 
 }
 
 void Scene::randomInitial(int seed) {
@@ -140,44 +137,6 @@ void Scene::acceleratePlayer(bool posAccel)
 	player->accelerate(posAccel);
 	aI->accelerate(false);
 }
-void Scene::moveBalls()
-{
-	/* The amount of time before the previous call*/
-	float time = (float)(clock() - t) / CLOCKS_PER_SEC;
-	t = clock();
-
-	/* The new distance that the ball should move in this frame */
-	//S = ut + 1/2(a(t)^2)	
-	/*cout << " The acceleration is ";
-	player->printVector(player->acceleration);*/
-	glm::vec3 diff = glm::vec3(0.0f, 0.0f, 0.0f);
-	diff = (player->initVelocity * time) + (0.50f * player->acceleration * pow(time, 2));
-	cout << " The diff is ";
-	player->printVector(diff);
-	playerBallTrans->transformMatrix = playerBallTrans->transformMatrix * glm::translate(glm::mat4(1.0f), diff);
-
-	/* For the aI part */
-	diff = (aI->initVelocity * time) + (0.50f * aI->acceleration * pow(time, 2));
-	cout << " The aI acceleration is ";
-	player->printVector(aI->acceleration);
-	ballBTrans->transformMatrix = ballBTrans->transformMatrix * glm::translate(glm::mat4(1.0f), diff);
-}
-void Scene::buildGraph()
-{
-	/* Now to build the tree */
-	worldGroup->addChild(playerBallTrans);
-	worldGroup->addChild(ballBTrans);
-	worldGroup->addChild(city);
-
-	playerBallTrans->addChild(player);
-	ballBTrans->addChild(aI);
-
-	playerBallTrans->addChild(boundBoxATrans);
-	ballBTrans->addChild(boundBoxBTrans);
-
-	boundBoxATrans->addChild(genCube);
-	boundBoxBTrans->addChild(genCube);
-}
 void Scene::initializeObjects()
 {
 	boundBoxATrans = new MatrixTransform();
@@ -185,15 +144,12 @@ void Scene::initializeObjects()
 	playerBallTrans = new MatrixTransform();
 	ballBTrans = new MatrixTransform();
 
-	player = new Ball(true, glm::vec3(0.0f, 1, 0.0f));
-	player->sphere = genSphere;
+	player = new Ball(true, glm::vec3(0.0f, 1, 0.0f), playerBallTrans);
+	Window::camera->player = player;
 
-	aI = new Ball(false, glm::vec3(0.0f, 1.0f, -25.0f));
-	aI->sphere = genSphere;
+	aI = new Ball(false, glm::vec3(0.0f, 1.0f, -25.0f), ballBTrans);
 
 	/* Set the initial position for the object */
-	ballBTrans->transformMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, -25.0f));
-	playerBallTrans->transformMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	city->addObject(ballBTrans->transformMatrix);
 	city->addObject(playerBallTrans->transformMatrix);
@@ -202,17 +158,14 @@ void Scene::initializeObjects()
 	collidableObjects.push_back(player);
 	collidableObjects.push_back(aI);
 
-	worldGroup->addChild(playerBallTrans);
-	worldGroup->addChild(ballBTrans);
+	worldGroup->addChild(player);
+	worldGroup->addChild(aI);
 
-	playerBallTrans->addChild(player);
-	ballBTrans->addChild(aI);
+	playerBallTrans->addChild(genCube);
+	playerBallTrans->addChild(genSphere);
 
-	playerBallTrans->addChild(boundBoxATrans);
-	ballBTrans->addChild(boundBoxBTrans);
-
-	boundBoxATrans->addChild(genCube);
-	boundBoxBTrans->addChild(genCube);
+	ballBTrans->addChild(genCube);
+	ballBTrans->addChild(genSphere);
 }
 bool Scene::isCollide()
 {
@@ -237,22 +190,19 @@ bool Scene::isCollide()
 				//collidableObjects[j]->handleCollision(collidableObjects[i]);
 			}
 		}
-	}
-	/* Update their position after collisions */
-	moveBalls();
+	}	
 	return player->collidesWith(aI);
 }
 void Scene::zoom(float scrollOffset, glm::vec3 & cam_pos)
 {
 	float fact = 0.0f;
-	if (scrollOffset > 0) {
+	if (scrollOffset > 0){
 		fact = 1.5f;
-		worldMatTrans = glm::scale(glm::mat4(1.0f), glm::vec3(fact)) * worldMatTrans;
 	}
 	if (scrollOffset < 0) {
 		fact = 0.75f;
-		worldMatTrans = glm::scale(glm::mat4(1.0f), glm::vec3(fact)) * worldMatTrans;
 	}
+
 }
 void Scene::jumpPlayer(bool accel)
 {

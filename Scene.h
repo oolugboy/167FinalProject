@@ -29,6 +29,7 @@
 #include "City.h"
 #include <string>
 #include <time.h>
+#include "Camera.h"
 
 //Building Grammar
 #include "BuildingGrammar.h"
