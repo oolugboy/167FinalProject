@@ -22,9 +22,7 @@ using namespace std;
 class Camera
 {
 public:
-	Camera(Ball * p);
-	~Camera();
-
+	Camera();
 
 	void changeMode();
 	glm::mat4 getV();

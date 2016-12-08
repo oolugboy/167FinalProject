@@ -13,6 +13,11 @@ MatrixTransform * buildingTrans;
 vector <const GLchar * > playSkyFaces;
 vector <const GLchar * > aISkyFaces;
 
+/*AUDIO*/
+ISoundEngine *SoundEngine = createIrrKlangDevice();
+/*END*/
+
+
 Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 {
 	playSkyFaces.resize(6);
@@ -104,13 +109,13 @@ void Scene::randomInitial(int seed) {
 
 		if (city->addObject(cMatrix)) {
 			//TODO: buildings are too height, cannot see anything for debug, might need a max hieght, and make the height depend on scale?
-			/*buildingTrans = buildingGram->Build(glm::vec3(xpos, 0.0f, zpos), glm::vec3(size), rotAngle);
-			worldGroup->addChild(buildingTrans);*/
-			MatrixTransform* cube1 = new MatrixTransform();
+			buildingTrans = buildingGram->Build(glm::vec3(xpos, 0.0f, zpos), glm::vec3(size), rotAngle);
+			worldGroup->addChild(buildingTrans);
+			/*MatrixTransform* cube1 = new MatrixTransform();
 			glm::mat4 cube1_matrix = cube1->transformMatrix * translate * scale * rot;
 			cube1->transformMatrix = cube1_matrix;
 			cube1->addChild(genCube);
-			worldGroup->addChild(cube1);
+			worldGroup->addChild(cube1);*/
 		}
 	}
 	worldGroup->addChild(city);
@@ -194,6 +199,7 @@ void Scene::initializeObjects()
 }
 bool Scene::isCollide()
 {
+
 	int size = collidableObjects.size();
 	for (int i = 0; i < size; i++)
 	{
@@ -211,7 +217,10 @@ bool Scene::isCollide()
 				if (collidableObjects[j]->movable) {
 					collidableObjects[j]->handleCollision(collidableObjects[i]);
 
-				}	
+				}
+				//collidableObjects[j]->handleCollision(collidableObjects[i]);
+				if(collidableObjects[i] == player || collidableObjects[j] == player)
+					SoundEngine->play2D("audio/bounce.wav", GL_FALSE);
 			}
 		}
 	}	
@@ -220,13 +229,13 @@ bool Scene::isCollide()
 void Scene::zoom(float scrollOffset, glm::vec3 & cam_pos)
 {
 	float fact = 0.0f;
-	if (scrollOffset > 0)
-	{
+	if (scrollOffset > 0){
 		fact = 1.5f;
 	}
 	if (scrollOffset < 0) {
 		fact = 0.75f;
 	}
+
 }
 void Scene::jumpPlayer(bool accel)
 {

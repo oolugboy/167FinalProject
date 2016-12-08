@@ -3,19 +3,20 @@
 
 using namespace std;
 
-Trapezoid::Trapezoid(bool wired)
+Trapezoid::Trapezoid(GLchar * textureName)
 {	
-	this->wired = wired;
+	isTexture = true;
+
+	this->wired = false;
 	// Create array object and buffers. Remember to delete your buffers when the object is destroyed!
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-	glGenBuffers(1, &NBO);
+	glGenBuffers(1, &TBO);
 
 	axisBounds[0] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 	axisBounds[1] = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	axisBounds[2] = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
-	
+
 	// Bind the Vertex Array Object (VAO) first, then bind the associated buffers to it.
 	// Consider the VAO as a container for all your buffers.
 	glBindVertexArray(VAO);
@@ -35,22 +36,19 @@ Trapezoid::Trapezoid(bool wired)
 		3 * sizeof(GLfloat), // Offset between consecutive indices. Since each of our vertices have 3 floats, they should have the size of 3 floats in between
 		(GLvoid*)0); // Offset of the first vertex's component. In our case it's 0 since we don't pad the vertices array with anything.
 
-	/* Now to load the normals */
-	glBindBuffer(GL_ARRAY_BUFFER, NBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(normals[0]) * normNum, normals, GL_STATIC_DRAW);
+					 //Texture
+	glBindBuffer(GL_ARRAY_BUFFER, TBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(texture_v[0]) * 36, texture_v, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0); 
-
-	// We've sent the vertex and normal data over to OpenGL, but there's still something missing.
-	// In what order should it draw those vertices? That's why we'll need a GL_ELEMENT_ARRAY_BUFFER for this.
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 
 	// Unbind the currently bound buffer so that we don't accidentally make unwanted changes to it.
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	// Unbind the VAO now so we don't accidentally tamper with it.
 	// NOTE: You must NEVER unbind the element array buffer associated with a VAO!
 	glBindVertexArray(0);
+
+	texture = loadTexture(textureName);
 }
 
 Trapezoid::~Trapezoid()
@@ -70,7 +68,7 @@ void Trapezoid::spin(float deg)
 }
 void Trapezoid::render()
 {	
-	//cout << " We got to rendering the Trapezoid " << endl;
+	//cout << " We got to rendering the cube " << endl;
 	// We need to calcullate this because modern OpenGL does not keep track of any matrix other than the viewport (D)
 	// Consequently, we need to forward the projection, view, and model matrices to the shader programs
 	// Get the location of the uniform variables "projection" and "modelview"
@@ -80,15 +78,32 @@ void Trapezoid::render()
 	// Now send these values to the shader program
 	glUniformMatrix4fv(uProjection, 1, GL_FALSE, &Window::P[0][0]);
 	glUniformMatrix4fv(uModelview, 1, GL_FALSE, &modelView[0][0]);
-	// Now draw the Trapezoid. We simply need to bind the VAO associated with it.
+	// Now draw the cube. We simply need to bind the VAO associated with it.
 	glBindVertexArray(VAO);
+
+	// Check if we are using a texture, and load it into the shader
+	//Not using a texture
+	if (!isTexture)
+	{
+		glUniform1i(glGetUniformLocation(Window::shaderProgram2, "isTexture"), 0);
+	}
+
+	//Using a texture
+	else
+	{
+		glUniform1i(glGetUniformLocation(Window::shaderProgram2, "isTexture"), 1);
+		glActiveTexture(GL_TEXTURE0);
+		glUniform1i(glGetUniformLocation(Window::shaderProgram2, "tile"), 0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+	}
+
 	glEnable(GL_DEPTH_TEST);
 	if (wired)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 	// Tell OpenGL to draw with triangles, using 36 indices, the type of the indices, and the offset to start from
-	glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, vertNum);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	// Unbind the VAO when we're done so we don't accidentally draw extra stuff or tamper with its bound buffers
 	glBindVertexArray(0);

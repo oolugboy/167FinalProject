@@ -31,6 +31,10 @@
 #include <time.h>
 #include "Camera.h"
 
+//Sound effects
+#include <irrKlang.h>
+using namespace irrklang;
+
 //Building Grammar
 #include "BuildingGrammar.h"
 

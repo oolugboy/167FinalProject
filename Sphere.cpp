@@ -137,6 +137,8 @@ void Sphere::render()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 	glEnable(GL_DEPTH_TEST);
 
+	glUniform1i(glGetUniformLocation(Window::shaderProgram2, "isTexture"), 0);
+
 	/* figure out the width of the lines*/
 	if (wired)
 	{
