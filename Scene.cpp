@@ -31,7 +31,7 @@ Scene::Scene(int numRobots, GLint shaderProgram1, GLint shaderProgram2)
 	genCube = new Cube(true);
 
 
-	randomInitial(1); 
+	randomInitial(0); 
 }
 
 void Scene::randomInitial(int seed) {
@@ -44,7 +44,7 @@ void Scene::randomInitial(int seed) {
 	city = new City(world_grids);
 	BuildingGrammar * buildingGram = new BuildingGrammar();
 
-	if (seed >= 0) { srand(0); }
+	if (seed >= 0) { srand(seed); }
 	else { srand(time(NULL)); }
 
 	initializeObjects();
@@ -193,6 +193,7 @@ bool Scene::isCollide()
 
 				}
 				//collidableObjects[j]->handleCollision(collidableObjects[i]);
+				//Play "bounce" sound effect on collision with player
 				if(collidableObjects[i] == player || collidableObjects[j] == player)
 					SoundEngine->play2D("audio/bounce.wav", GL_FALSE);
 			}

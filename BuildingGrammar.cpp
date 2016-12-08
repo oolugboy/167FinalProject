@@ -117,8 +117,7 @@ int height_counter = 0;
 BuildingGrammar::BuildingGrammar()
 {
 	//Seed our RNG using current time (this will give unique results for each die roll)
-	srand(time(NULL));
-
+	
 	//Initialize Our building shapes
 	//WARNING NEED TO MOVE THIS ELSEWHERE SO WE DON'T RUN OUT OF MEMORY
 	sphere = new Sphere(2, false);
