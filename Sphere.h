@@ -36,5 +36,6 @@ public:
 	bool inBound();
 	vector <float > dVals;
 	vector < glm::vec3 > frustNorms;	
+	static GLuint textureID;
 };
 #endif

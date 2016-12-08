@@ -70,9 +70,12 @@ class Scene
 		Sphere * genSphere;
 		Cube * genCube;
 		vector < Ball * > gameBalls;
-		void acceleratePlayer(bool posAccel);
+		void acceleratePlayers(bool posAccel);
 		void jumpPlayer(bool accel);
 		vector< Object * > collidableObjects;		
 		clock_t t;
+		vector< Ball * > aIs;	
+		void update();
+		float numAgents;
 };
 #endif

@@ -19,6 +19,8 @@
 #include <time.h>
 #include "Object.h"
 #include "MatrixTransform.h"
+#include "Sphere.h"
+#include <SOIL.h>
 #include <cmath>
 
 using namespace std;
@@ -48,9 +50,12 @@ public:
 	float maxSpeed;		
 	void accelerate(bool posAccel);
 	glm::vec3 forwardForce;
+	static GLuint loadTexture(GLchar * path);
+	static vector <const GLchar *> playSkyFaces;
+	static GLuint playerTexID;
+	static GLuint aITexID;
 	void jump(bool accel);
-	bool inAir;
-	int turn;
+	bool inAir;	
 	int collideAm;
 };
 #endif
