@@ -41,6 +41,7 @@ public:
 	static glm::vec3 cam_look_at;	// d  | This is where the camera looks at
 	static glm::vec3 cam_up;			// up | What orientation "up" is	
 	static Camera * camera;
+	static glm::vec3 lightSourcePos;
 	static int isTexture;
 };
 #endif

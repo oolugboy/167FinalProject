@@ -38,5 +38,10 @@ public:
 	vector <float > dVals;
 	vector < glm::vec3 > frustNorms;	
 	static GLuint textureID;
+	const GLuint SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+	void setUpFrameBuffer();
+	void depthMapRender();
+	GLuint depthMap;
+	GLuint depthMapFBO;
 };
 #endif

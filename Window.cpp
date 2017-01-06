@@ -48,6 +48,8 @@ glm::mat4 Window::V;
 GLint Window::shaderProgram2;
 GLint Window::agentShaderProgram;
 
+glm::vec3 Window::lightSourcePos;
+
 int camera_mode = 0;
 clock_t timeCount = clock();
 
@@ -62,6 +64,8 @@ void Window::initialize_objects()
 	/*Set the initial projection matrix */
 	P = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
 
+	/* Set the position for the ligth source */
+	lightSourcePos = glm::vec3(0.0f, 20.0f, -10.0f);
 }
 
 // Treat this as a destructor function. Delete dynamically allocated memory here.
